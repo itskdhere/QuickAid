@@ -4,8 +4,25 @@ import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { IUser, User } from "../db/models/user.model";
 
+export async function userWhoami(req: Request, res: Response): Promise<void> {
+  const user = req.user as IUser;
+
+  res.json({
+    status: "success",
+    data: {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        // avatar: user.avatar,
+        createdAt: user.createdAt,
+      },
+    },
+  });
+}
+
 export async function userSignout(req: Request, res: Response): Promise<void> {
-  if (req?.cookies?.jwt === undefined) {
+  if (!req?.user) {
     res.status(401).json({
       status: "error",
       error: {

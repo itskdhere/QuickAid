@@ -1,6 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
+
 export interface IUser extends Document {
   id: string;
   name: string;

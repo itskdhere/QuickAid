@@ -1,12 +1,8 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { IUser, User } from "../db/models/user.model";
-import { AuthRequest, AuthResponse } from "../middlewares/auth.middleware";
+import { User } from "../db/models/user.model";
 
-export async function userOnboard(
-  req: AuthRequest,
-  res: AuthResponse
-): Promise<void> {
+export async function userOnboard(req: Request, res: Response): Promise<void> {
   const schema = z.object({
     name: z.string().trim(),
     phone: z.string().trim(),
@@ -30,10 +26,6 @@ export async function userOnboard(
   }
 
   try {
-    if (!req.user) {
-      return;
-    }
-
     const user = await User.findOne({ id: req.user?.id });
     if (!user) {
       res.status(404).json({

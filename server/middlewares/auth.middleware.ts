@@ -2,23 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { IUser, User } from "../db/models/user.model";
 
-export interface AuthRequest extends Request {
-  user?: IUser;
-}
-
-export interface AuthResponse extends Response {
-  user?: IUser;
-}
-
 export default async function checkAuth(
-  req: AuthRequest,
-  res: AuthResponse,
+  req: Request,
+  res: Response,
   next: NextFunction
 ): Promise<void> {
   const token = req?.cookies?.jwt;
 
   if (!token) {
-    res.status(400).json({
+    res.status(401).json({
       status: "error",
       error: {
         code: 401,
