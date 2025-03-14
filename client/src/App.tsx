@@ -5,6 +5,7 @@ import AuthIndex from "./pages/auth/Index";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
 import OnboardUser from "./pages/onboard/User";
+import UserDashboard from "./pages/user/Dashboard";
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
         </Route>
         <Route path="onboard">
           <Route path="user" element={<OnboardUser />} />
+        </Route>
+        <Route path="user">
+          <Route path="dashboard" element={<UserDashboard />} />
         </Route>
       </Routes>
     </>
