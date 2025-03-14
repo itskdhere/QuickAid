@@ -4,6 +4,7 @@ import Landing from "./pages/Landing";
 import AuthIndex from "./pages/auth/Index";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
+import OnboardUser from "./pages/onboard/User";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
             <Route path="signup" element={<AuthUserSignup />} />
             <Route path="signin" element={<AuthUserSignin />} />
           </Route>
+        </Route>
+        <Route path="onboard">
+          <Route path="user" element={<OnboardUser />} />
         </Route>
       </Routes>
     </>

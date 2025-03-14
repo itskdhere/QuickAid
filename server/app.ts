@@ -22,4 +22,7 @@ app.use(passport.initialize());
 import authRoutes from "./routes/auth.routes";
 app.use("/api/v1/auth", authRoutes);
 
+import onboardRoutes from "./routes/onboard.routes";
+app.use("/api/v1/onboard", onboardRoutes);
+
 export default app;
