@@ -21,28 +21,40 @@ export default async function checkAuth(
     res.status(400).json({
       status: "error",
       error: {
-        code: 400,
-        message: "No token provided",
+        code: 401,
+        message: "Unauthorized",
       },
     });
     return;
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-  if (typeof decoded !== "object") {
+  let decodedToken: string | jwt.JwtPayload;
+
+  try {
+    decodedToken = jwt.verify(token, process.env.JWT_SECRET as string);
+    if (typeof decodedToken !== "object") {
+      res.status(401).json({
+        status: "error",
+        error: {
+          code: 401,
+          message: "Unauthorized",
+        },
+      });
+      return;
+    }
+  } catch (error) {
     res.status(401).json({
       status: "error",
       error: {
         code: 401,
-        message: "Invalid token",
+        message: "Unauthorized",
       },
     });
     return;
   }
 
   try {
-    console.log(decoded);
-    const user = (await User.findOne({ id: decoded.id })) as IUser;
+    const user = (await User.findOne({ id: decodedToken.id })) as IUser;
     console.log(user);
     if (!user) {
       res.status(404).json({
