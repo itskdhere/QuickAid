@@ -9,22 +9,25 @@ declare global {
 
 export interface IUser extends Document {
   id: string;
+  pfp: string;
+  email: string;
+  password: string;
+  createdAt: Date;
   name: string;
   phone: string;
   address: string;
   dob: Date;
-  createdAt: Date;
-  email: string;
-  password: string;
+  gender: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema: Schema<IUser> = new Schema({
   id: { type: String, default: crypto.randomUUID() },
-  name: { type: String, trim: true },
-  phone: { type: String, trim: true },
-  address: { type: String, trim: true },
-  dob: { type: Date },
+  pfp: {
+    type: String,
+    default:
+      "https://api.dicebear.com/9.x/glass/svg?seed=quickaid&backgroundType=gradientLinear",
+  },
   email: {
     type: String,
     required: true,
@@ -34,6 +37,11 @@ const UserSchema: Schema<IUser> = new Schema({
   },
   password: { type: String },
   createdAt: { type: Date, default: Date.now },
+  name: { type: String, trim: true },
+  phone: { type: String, trim: true },
+  address: { type: String, trim: true },
+  dob: { type: Date },
+  gender: { type: String },
 });
 
 UserSchema.pre("save", async function (next) {

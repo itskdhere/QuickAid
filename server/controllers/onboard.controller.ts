@@ -6,14 +6,16 @@ export async function userOnboard(req: Request, res: Response): Promise<void> {
   const schema = z.object({
     name: z.string().trim(),
     phone: z.string().trim(),
-    dob: z.string().trim(),
     address: z.string().trim(),
+    dob: z.string().trim(),
+    gender: z.enum(["male", "female", "other"]),
   });
 
-  const { name, phone, dob, address }: z.infer<typeof schema> = req.body;
+  const { name, phone, address, dob, gender }: z.infer<typeof schema> =
+    req.body;
 
   try {
-    schema.parse({ name, phone, dob, address });
+    schema.parse({ name, phone, address, dob, gender });
   } catch (err) {
     res.status(400).json({
       status: "error",
@@ -40,8 +42,13 @@ export async function userOnboard(req: Request, res: Response): Promise<void> {
 
     user.name = name;
     user.phone = phone;
-    user.dob = new Date(dob);
     user.address = address;
+    user.dob = new Date(dob);
+    user.gender = gender;
+    user.pfp = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+      name
+    )}&backgroundType=gradientLinear`;
+
     await user.save();
 
     res.json({

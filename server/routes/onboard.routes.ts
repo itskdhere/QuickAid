@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { userOnboard } from "../controllers/onboard.controller";
 import checkAuth from "../middlewares/auth.middleware";
+import { userOnboard } from "../controllers/onboard.controller";
 
 const router = Router();
 

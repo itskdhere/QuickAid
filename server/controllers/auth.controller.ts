@@ -12,9 +12,9 @@ export async function userWhoami(req: Request, res: Response): Promise<void> {
     data: {
       user: {
         id: user.id,
+        pfp: user.pfp,
         name: user.name,
         email: user.email,
-        // avatar: user.avatar,
         createdAt: user.createdAt,
       },
     },

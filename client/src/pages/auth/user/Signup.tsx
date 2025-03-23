@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { GalleryVerticalEnd } from "lucide-react";
 import axios from "axios";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Logo from "@/components/Logo";
+import { toast } from "sonner";
 
 export default function AuthUserSignup() {
   const [email, setEmail] = useState("");
@@ -29,13 +29,11 @@ export default function AuthUserSignup() {
     setLoading(true);
     axios
       .post("/api/v1/auth/user/signup", { email, password })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         setLoading(false);
         navigate("/onboard/user");
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
         toast.error(
           `Error ${err.response.data.error.code}: ${err.response.data.error.message}`
@@ -50,8 +48,8 @@ export default function AuthUserSignup() {
           to="/"
           className="flex items-center gap-2 self-center font-medium"
         >
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <GalleryVerticalEnd className="size-4" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
+            <Logo />
           </div>
           QuickAid
         </Link>
@@ -136,8 +134,8 @@ export default function AuthUserSignup() {
             </CardContent>
           </Card>
           <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            By signin up, you agree to our <a href="#">Terms of Service</a> and{" "}
+            <a href="#">Privacy Policy</a>.
           </div>
         </div>
       </div>

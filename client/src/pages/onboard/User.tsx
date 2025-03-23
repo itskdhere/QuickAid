@@ -12,13 +12,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 
 export default function OnboardUser() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [dob, setDob] = useState("");
   const [address, setAddress] = useState("");
+  const [dob, setDob] = useState("");
+  const [gender, setGender] = useState("");
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -26,14 +29,12 @@ export default function OnboardUser() {
     e.preventDefault();
     setLoading(true);
     axios
-      .post("/api/v1/onboard/user", { name, phone, dob, address })
-      .then((res) => {
-        console.log(res.data);
+      .post("/api/v1/onboard/user", { name, phone, address, dob, gender })
+      .then(() => {
         setLoading(false);
         navigate("/user/dashboard");
       })
       .catch((err) => {
-        console.log(err);
         toast.error(
           `Error ${err.response.data.error.code}: ${err.response.data.error.message}`
         );
@@ -78,16 +79,6 @@ export default function OnboardUser() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="dob">Date of Birth</Label>
-                  <Input
-                    id="dob"
-                    type="date"
-                    required
-                    value={dob}
-                    onChange={(e) => setDob(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
                   <Label htmlFor="address">Address</Label>
                   <Input
                     id="address"
@@ -98,7 +89,44 @@ export default function OnboardUser() {
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <div className="grid gap-2">
+                  <Label htmlFor="dob">Date of Birth</Label>
+                  <Input
+                    id="dob"
+                    type="date"
+                    required
+                    value={dob}
+                    onChange={(e) => setDob(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="address">Gender</Label>
+                  <RadioGroup
+                    id="gender"
+                    className="flex flex-row space-x-5"
+                    required
+                    value={gender}
+                    onValueChange={(value) => setGender(value)}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="male" id="gender-male" />
+                      <Label htmlFor="gender-male">Male</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="female" id="gender-female" />
+                      <Label htmlFor="gender-female">Female</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="other" id="gender-other" />
+                      <Label htmlFor="gender-other">Other</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <Button
+                  type="submit"
+                  className="mt-6 w-full"
+                  disabled={loading}
+                >
                   Submit
                 </Button>
               </div>

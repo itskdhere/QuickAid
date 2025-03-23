@@ -8,7 +8,7 @@ export default function AuthIndex() {
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Continue as</CardTitle>
+            <CardTitle className="text-xl">Continue as...</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
@@ -18,7 +18,7 @@ export default function AuthIndex() {
                 </Button>
               </Link>
               <Link to="/auth/org/signup">
-                <Button variant="default" className="w-full">
+                <Button variant="secondary" className="w-full">
                   Organization
                 </Button>
               </Link>

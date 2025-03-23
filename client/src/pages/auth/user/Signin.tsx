@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { GalleryVerticalEnd } from "lucide-react";
 import axios from "axios";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Logo from "@/components/Logo";
+import { toast } from "sonner";
 
 export default function AuthUserSignin() {
   const [email, setEmail] = useState("");
@@ -29,13 +29,11 @@ export default function AuthUserSignin() {
     setLoading(true);
     axios
       .post("/api/v1/auth/user/signin", { email, password })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         setLoading(false);
         navigate("/user/dashboard");
       })
       .catch((err) => {
-        console.log(err);
         toast.error(
           `Error ${err.response.data.error.code}: ${err.response.data.error.message}`
         );
@@ -50,8 +48,8 @@ export default function AuthUserSignin() {
           to="/"
           className="flex items-center gap-2 self-center font-medium"
         >
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <GalleryVerticalEnd className="size-4" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
+            <Logo />
           </div>
           QuickAid
         </Link>
@@ -105,7 +103,7 @@ export default function AuthUserSignin() {
                       <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
                         <Link
-                          to="/forgot-password"
+                          to="/auth/forgot-password"
                           className="ml-auto text-sm underline-offset-4 hover:underline"
                         >
                           Forgot your password?
@@ -142,8 +140,8 @@ export default function AuthUserSignin() {
             </CardContent>
           </Card>
           <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-            By clicking continue, you agree to our{" "}
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            By signin in, you agree to our <a href="#">Terms of Service</a> and{" "}
+            <a href="#">Privacy Policy</a>.
           </div>
         </div>
       </div>

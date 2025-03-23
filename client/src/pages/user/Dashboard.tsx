@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
-import axios from "axios";
-import { Avatar } from "@/components/ui/avatar";
+// import { useState, useEffect } from "react";
+import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import {
@@ -11,31 +9,14 @@ import {
   Ambulance,
   Building2,
   // Phone,
-  Heart,
   Activity,
   PersonStanding,
   // Clock,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  createdAt: Date;
-}
+import NavBar from "@/components/NavBar";
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<IUser>();
   // const [tips, setTips] = useState([]);
   // const [activeSlide, setActiveSlide] = useState(0);
   // const emergencyContacts = [
@@ -62,92 +43,10 @@ export default function Dashboard() {
   //   fetchData();
   // }, []);
 
-  useEffect(() => {
-    async function fetchUser() {
-      await axios
-        .get("/api/v1/auth/user/whoami", {
-          withCredentials: true,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            setUser(res?.data?.data?.user);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          setUser(undefined);
-          if (error?.status === 401) {
-            navigate("/auth/user/signin");
-          }
-        });
-    }
-    fetchUser();
-  }, []);
-
-  async function handleSignOut() {
-    await axios
-      .get("/api/v1/auth/user/signout", { withCredentials: true })
-      .then((res) => {
-        if (res.status === 200) {
-          window.location.href = "/auth/user/signin";
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg mb-12 border border-gray-700">
-        <div className="flex items-center gap-2">
-          <Heart className="w-6 h-6 text-red-500" />
-          <h1 className="text-2xl font-mono">QuickAid</h1>
-        </div>
-        <div className="relative flex items-center gap-2 text-sm">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className="flex items-center gap-2 hover:cursor-pointer">
-                <p className="text-lg">{user?.name}</p>
-                <Avatar className="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-500" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">{user?.name}</p>
-                  <p className="text-sm">{user?.email}</p>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <Link to="/user/account">
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  Account
-                </DropdownMenuItem>
-              </Link>
-              <Link to="/user/history">
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  History
-                </DropdownMenuItem>
-              </Link>
-              <Link to="/user/settings">
-                <DropdownMenuItem className="hover:cursor-pointer">
-                  Settings
-                </DropdownMenuItem>
-              </Link>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="hover:cursor-pointer"
-                onClick={handleSignOut}
-              >
-                <p className="text-red-600">Sign Out</p>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
+      <NavBar />
 
       {/* Services Section */}
       <section className="mb-14">
@@ -175,7 +74,7 @@ export default function Dashboard() {
           <Link to="/user/ambulance">
             <ServiceCard
               icon={<Ambulance className="w-6 h-6 text-red-400" />}
-              title="Book & track ambulance"
+              title="Get ambulance"
               subtitle="in case of any emergency"
               gradient="from-red-500/10 to-pink-500/10"
             />
