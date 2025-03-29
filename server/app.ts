@@ -30,4 +30,8 @@ app.use("/api/v1/diagnostics", diagnostics);
 
 import nearby from "./routes/nearby.routes";
 app.use("/api/v1/nearby", nearby);
+
+import misc from "./routes/misc.routes";
+app.use("/api/v1/misc", misc);
+
 export default app;
