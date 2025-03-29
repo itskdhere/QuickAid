@@ -15,6 +15,10 @@ export async function userWhoami(req: Request, res: Response): Promise<void> {
         pfp: user.pfp,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        address: user.address,
+        dob: user.dob,
+        gender: user.gender,
         createdAt: user.createdAt,
       },
     },
@@ -152,13 +156,13 @@ export async function userSignin(req: Request, res: Response): Promise<void> {
       }
 
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "12h",
       });
 
       res.cookie("jwt", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 3600, // 1 hour
+        maxAge: 1000 * 3600 * 12, // 12 hour
       });
 
       res.json({

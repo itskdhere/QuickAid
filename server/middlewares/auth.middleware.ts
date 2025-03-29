@@ -58,6 +58,21 @@ export default async function checkAuth(
       return;
     }
     req.user = user;
+
+    const newToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "12h",
+      }
+    );
+
+    res.cookie("jwt", newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 3600 * 12, // 12 hour
+    });
+
     next();
   } catch (err) {
     res.status(500).json({
