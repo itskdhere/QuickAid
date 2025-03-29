@@ -4,7 +4,9 @@ import Landing from "./pages/Landing";
 import AuthIndex from "./pages/auth/Index";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
+import AuthForgotPassword from "./pages/auth/user/ForgotPassword";
 import OnboardUser from "./pages/onboard/User";
+import UserSettings from "./pages/user/Settings";
 import UserDashboard from "./pages/user/Dashboard";
 import UserDiagnostics from "./pages/user/Diagnostics";
 import UserNearby from "./pages/user/Nearby";
@@ -18,6 +20,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="auth">
           <Route index element={<AuthIndex />} />
+          <Route path="forgot-password" element={<AuthForgotPassword />} />
           <Route path="user">
             <Route index element={<Navigate to="signup" />} />
             <Route path="signup" element={<AuthUserSignup />} />
@@ -28,6 +31,7 @@ function App() {
           <Route path="user" element={<OnboardUser />} />
         </Route>
         <Route path="user">
+          <Route path="settings" element={<UserSettings />} />
           <Route path="dashboard" element={<UserDashboard />} />
           <Route path="diagnostics" element={<UserDiagnostics />} />
           <Route path="nearby" element={<UserNearby />} />
