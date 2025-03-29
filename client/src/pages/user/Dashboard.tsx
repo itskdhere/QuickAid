@@ -1,47 +1,54 @@
-// import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import axios from "axios";
+import NavBar from "@/components/NavBar";
 import { Card, CardContent } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
 import {
-  // ChevronLeft,
-  // ChevronRight,
   AlertCircle,
   Ambulance,
   Building2,
-  // Phone,
+  Phone,
   Activity,
   PersonStanding,
-  // Clock,
+  Heart,
 } from "lucide-react";
 
-import NavBar from "@/components/NavBar";
+type THealthTips = {
+  title: string;
+  description: string;
+};
+
+const emergencyContacts = [
+  { title: "Emergency Helpline", number: "112" },
+  { title: "Medical Support", number: "102" },
+  { title: "Police", number: "100" },
+  { title: "Fire", number: "101" },
+  { title: "Women Helpline ", number: "1091" },
+  { title: "LPG Leak Helpline", number: "1906" },
+];
 
 export default function Dashboard() {
-  // const [tips, setTips] = useState([]);
-  // const [activeSlide, setActiveSlide] = useState(0);
-  // const emergencyContacts = [
-  //   { title: "Emergency Helpline", number: "112", badge: "24/7" },
-  //   { title: "Medical Support", number: "102", badge: "Toll Free" },
-  // ];
+  const [tips, setTips] = useState<THealthTips[]>([]);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     await axios
-  //       .get("/api/v1/user/health-tips", {
-  //         withCredentials: true,
-  //       })
-  //       .then((res) => {
-  //         if (res.status === 200) {
-  //           setTips(res?.data);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //         setTips([]);
-  //       });
-  //   }
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    async function fetchData() {
+      await axios
+        .get("/api/v1/misc/tips", {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(res?.data.tips);
+            setTips(res?.data.tips);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setTips([]);
+        });
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4">
@@ -58,32 +65,32 @@ export default function Dashboard() {
           <Link to="/user/diagnostics">
             <ServiceCard
               icon={<AlertCircle className="w-6 h-6 text-yellow-400" />}
-              title="Feeling unwell ?"
-              subtitle="get help !"
+              title="Self Diagnostics"
+              subtitle="Diagnose your symptoms & contact doctors"
               gradient="from-yellow-500/10 to-orange-500/10"
             />
           </Link>
           <Link to="/user/nearby">
             <ServiceCard
               icon={<Building2 className="w-6 h-6 text-blue-400" />}
-              title="Find nearby"
-              subtitle="doctors / clinics / pharmacies"
+              title="Nearby Search"
+              subtitle="Find nearby doctors, hospitals, pharmacies, dentists"
               gradient="from-blue-500/10 to-cyan-500/10"
             />
           </Link>
           <Link to="/user/ambulance">
             <ServiceCard
               icon={<Ambulance className="w-6 h-6 text-red-400" />}
-              title="Get ambulance"
-              subtitle="in case of any emergency"
+              title="Emergency Ambulance"
+              subtitle="Get ambulance in case of any emergency"
               gradient="from-red-500/10 to-pink-500/10"
             />
           </Link>
           <Link to="/user/community">
             <ServiceCard
               icon={<PersonStanding className="w-6 h-6 text-green-400" />}
-              title="Community"
-              subtitle="join & help others"
+              title="Community Fourm"
+              subtitle="Interact with others users & share your experiences"
               gradient="from-green-500/10 to-emerald-500/10"
             />
           </Link>
@@ -91,13 +98,13 @@ export default function Dashboard() {
       </section>
 
       {/* Health Tips */}
-      {/* <section className="mb-14">
+      <section className="mb-14">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Heart className="w-5 h-5 text-pink-400" />
-          Daily Health Tips
+          Health Tips
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {tips?.length === 0 ? (
+          {tips?.length !== 0 ? (
             tips.map((tip, index) => (
               <Card
                 key={index}
@@ -105,90 +112,62 @@ export default function Dashboard() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                    {/* <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
                       <Clock className="w-4 h-4 text-purple-400" />
+                    </div> */}
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-200">
+                        {tip.title}
+                      </h3>
+                      <p className="text-gray-400">{tip.description}</p>
                     </div>
-                    <p className="text-gray-300">{tip}</p>
                   </div>
                 </CardContent>
               </Card>
             ))
           ) : (
-            <p className="text-gray-300">No tips available</p>
+            <p className="text-xl text-gray-300">Loading...</p>
           )}
         </div>
-      </section> */}
+      </section>
 
       {/* Emergency Contacts Carousel */}
-      {/* <div className="relative bg-gradient-to-r from-red-500/10 to-purple-500/10 border border-gray-700 rounded-lg mb-6 p-6">
+      <div className="relative bg-gradient-to-r from-red-500/10 to-purple-500/10 border border-gray-700 rounded-lg mb-6 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <Phone className="w-5 h-5 text-red-400" />
             Emergency Contacts
           </h2>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveSlide((prev) => Math.max(0, prev - 1))}
-              className="p-2 hover:bg-gray-700 rounded-full transition-colors"
-              disabled={activeSlide === 0}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() =>
-                setActiveSlide((prev) =>
-                  Math.min(emergencyContacts.length - 1, prev + 1)
-                )
-              }
-              className="p-2 hover:bg-gray-700 rounded-full transition-colors"
-              disabled={activeSlide === emergencyContacts.length - 1}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
         </div>
-        <div className="overflow-hidden">
-          <div
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden">
+          {/* <div
             className="flex transition-transform duration-300 ease-in-out"
             style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-          >
-            {emergencyContacts.map((contact, index) => (
-              <div key={index} className="w-full flex-shrink-0">
-                <Card className="bg-gray-800/50 border-gray-700">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-medium mb-1 text-gray-300">
-                          {contact.title}
-                        </h3>
-                        <p className="text-2xl font-bold text-blue-400">
-                          {contact.number}
-                        </p>
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className="bg-red-500/20 text-red-400"
-                      >
-                        {contact.badge}
-                      </Badge>
+          > */}
+          {emergencyContacts.map((contact, index) => (
+            <div key={index} className="w-full flex-shrink-0">
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-medium mb-1 text-gray-300">
+                        {contact.title}
+                      </h3>
+                      <p className="text-2xl font-bold text-blue-400">
+                        {contact.number}
+                      </p>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
+                    <a href={`tel:+${contact.number}`}>
+                      <Phone className="text-red-400" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
         </div>
-      </div> */}
-
-      {/* SOS Button */}
-      {/* <div className="flex justify-center">
-        <Button
-          variant="outline"
-          className="w-20 h-20 rounded-full border-2 border-red-500 hover:bg-red-500/20 hover:scale-105 transition-all duration-300 animate-pulse"
-        >
-          <span className="text-red-500 font-bold text-xl">SOS</span>
-        </Button>
-      </div> */}
+      </div>
+      {/* </div> */}
     </div>
   );
 }
