@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
@@ -41,12 +41,33 @@ export default function AuthUserSignup() {
       });
   }
 
+  useEffect(() => {
+    async function fetchUser() {
+      await axios
+        .get("/api/v1/auth/user/whoami", {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            navigate("/user/dashboard");
+          }
+        })
+        .catch((error) => {
+          if (error.response.data.error.code === 401) return;
+          toast.error(
+            `Error ${error.response.data.error.code}: ${error.response.data.error.message}`
+          );
+        });
+    }
+    fetchUser();
+  }, []);
+
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="dark flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 bg-gradient-to-b from-gray-900 to-black">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Link
           to="/"
-          className="flex items-center gap-2 self-center font-medium"
+          className="flex items-center gap-2 self-center font-medium text-primary"
         >
           <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
             <Logo />
@@ -54,7 +75,7 @@ export default function AuthUserSignup() {
           QuickAid
         </Link>
         <div className="flex flex-col gap-6">
-          <Card>
+          <Card className="bg-transparent">
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Hello there</CardTitle>
               <CardDescription>
@@ -66,7 +87,7 @@ export default function AuthUserSignup() {
                 <div className="grid gap-6">
                   <div className="flex flex-col gap-4">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       className="w-full"
                       disabled={loading}
                     >
@@ -117,7 +138,7 @@ export default function AuthUserSignup() {
                       onClick={handleSignup}
                       disabled={loading}
                     >
-                      Sign Up
+                      Create Account
                     </Button>
                   </div>
                   <div className="text-center text-sm">

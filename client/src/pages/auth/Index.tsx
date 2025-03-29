@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 export default function AuthIndex() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="dark flex min-h-screen flex-col items-center justify-center gap-6 p-6 md:p-10 bg-gradient-to-b from-gray-900 to-black">
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <Card>
+        <Card className="bg-transparent">
           <CardHeader className="text-center">
             <CardTitle className="text-xl">Continue as...</CardTitle>
           </CardHeader>
@@ -17,9 +17,14 @@ export default function AuthIndex() {
                   User
                 </Button>
               </Link>
-              <Link to="/auth/org/signup">
-                <Button variant="secondary" className="w-full">
+              <Link to="#" className="cursor-not-allowed">
+                <Button variant="secondary" className="w-full" disabled>
                   Organization
+                </Button>
+              </Link>
+              <Link to="/auth/forgot-password">
+                <Button variant="link" className="w-full underline">
+                  Reset Password
                 </Button>
               </Link>
             </div>

@@ -43,9 +43,9 @@ export default function OnboardUser() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="dark flex min-h-screen flex-col items-center justify-center gap-6 p-6 md:p-10 bg-gradient-to-b from-gray-900 to-black">
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <Card>
+        <Card className="bg-transparent">
           <CardHeader className="text-center">
             <CardTitle className="text-xl">User Onboarding</CardTitle>
             <CardDescription>

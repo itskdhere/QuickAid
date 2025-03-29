@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FaArrowLeft } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export interface IUser {
@@ -21,7 +22,7 @@ export interface IUser {
   createdAt: Date;
 }
 
-export default function NavBar() {
+export default function NavBar({ backBtn }: { backBtn?: boolean }) {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>();
 
@@ -65,6 +66,11 @@ export default function NavBar() {
   return (
     <header className="flex items-center justify-between p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg mb-12 border border-gray-700">
       <div className="flex items-center gap-2">
+        {backBtn && (
+          <Link to="/user/dashboard">
+            <FaArrowLeft className="h-5 w-5" />
+          </Link>
+        )}
         <Logo className="w-10" />
         <h1 className="text-2xl font-mono">QuickAid</h1>
       </div>
@@ -79,23 +85,18 @@ export default function NavBar() {
               </Avatar>
             </div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="dark bg-gray-700/80 backdrop-blur-sm rounded-lg border border-gray-700">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <div className="flex flex-col gap-1">
+            <DropdownMenuLabel>
+              <div className="flex flex-col gap-1 font-normal">
                 <p className="text-sm">{user?.name}</p>
                 <p className="text-sm">{user?.email}</p>
               </div>
-            </DropdownMenuItem>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link to="/user/account">
+            <Link to="/user/dashboard">
               <DropdownMenuItem className="hover:cursor-pointer">
-                Account
-              </DropdownMenuItem>
-            </Link>
-            <Link to="/user/history">
-              <DropdownMenuItem className="hover:cursor-pointer">
-                History
+                Dashboard
               </DropdownMenuItem>
             </Link>
             <Link to="/user/settings">
