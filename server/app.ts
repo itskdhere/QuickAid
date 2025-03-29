@@ -27,4 +27,7 @@ app.use("/api/v1/onboard", onboardRoutes);
 
 import diagnostics from "./routes/diagnostics.routes";
 app.use("/api/v1/diagnostics", diagnostics);
+
+import nearby from "./routes/nearby.routes";
+app.use("/api/v1/nearby", nearby);
 export default app;
