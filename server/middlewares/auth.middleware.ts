@@ -46,7 +46,9 @@ export default async function checkAuth(
   }
 
   try {
-    const user = (await User.findOne({ id: decodedToken.id })) as IUser;
+    const user = (await User.findOne({ id: decodedToken.id }).select(
+      "-password"
+    )) as IUser;
     if (!user) {
       res.status(404).json({
         status: "error",

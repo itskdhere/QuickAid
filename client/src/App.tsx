@@ -11,6 +11,7 @@ import UserDashboard from "./pages/user/Dashboard";
 import UserDiagnostics from "./pages/user/Diagnostics";
 import UserNearby from "./pages/user/Nearby";
 import UserAmbulance from "./pages/user/Ambulance";
+import UserCommunity from "./pages/user/Community";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="diagnostics" element={<UserDiagnostics />} />
           <Route path="nearby" element={<UserNearby />} />
           <Route path="ambulance" element={<UserAmbulance />} />
+          <Route path="community" element={<UserCommunity />} />
         </Route>
       </Routes>
     </>

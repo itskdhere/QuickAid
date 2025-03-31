@@ -31,6 +31,9 @@ app.use("/api/v1/diagnostics", diagnostics);
 import nearby from "./routes/nearby.routes";
 app.use("/api/v1/nearby", nearby);
 
+import community from "./routes/community.routes";
+app.use("/api/v1/community", community);
+
 import misc from "./routes/misc.routes";
 app.use("/api/v1/misc", misc);
 

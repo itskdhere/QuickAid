@@ -1,6 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
+import Post from "./community.model.js";
+
 declare global {
   namespace Express {
     interface User extends IUser {}
@@ -13,6 +15,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   createdAt: Date;
+  updatedAt: Date;
   name: string;
   phone: string;
   address: string;
@@ -21,27 +24,38 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema: Schema<IUser> = new Schema({
-  id: { type: String, default: crypto.randomUUID() },
-  pfp: {
-    type: String,
-    default:
-      "https://api.dicebear.com/9.x/glass/svg?seed=quickaid&backgroundType=gradientLinear",
+const UserSchema: Schema<IUser> = new Schema(
+  {
+    id: { type: String, default: crypto.randomUUID() },
+    pfp: {
+      type: String,
+      default:
+        "https://api.dicebear.com/9.x/glass/svg?seed=quickaid&backgroundType=gradientLinear",
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: { type: String },
+    name: { type: String, trim: true },
+    phone: { type: String, trim: true },
+    address: { type: String, trim: true },
+    dob: { type: Date },
+    gender: { type: String },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true,
-  },
-  password: { type: String },
-  createdAt: { type: Date, default: Date.now },
-  name: { type: String, trim: true },
-  phone: { type: String, trim: true },
-  address: { type: String, trim: true },
-  dob: { type: Date },
-  gender: { type: String },
+  { timestamps: true }
+);
+
+UserSchema.pre("findOneAndDelete", async function (next) {
+  const user = await this.model.findOne(this.getFilter());
+  if (user) {
+    await Post.deleteMany({ user: user._id });
+    await Post.updateMany({ likes: user._id }, { $pull: { likes: user._id } });
+  }
+  next();
 });
 
 UserSchema.pre("save", async function (next) {
