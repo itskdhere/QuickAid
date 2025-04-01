@@ -25,6 +25,9 @@ app.use("/api/v1/auth", authRoutes);
 import onboardRoutes from "./routes/onboard.routes";
 app.use("/api/v1/onboard", onboardRoutes);
 
+import accountRoutes from "./routes/account.routes";
+app.use("/api/v1/account", accountRoutes);
+
 import diagnostics from "./routes/diagnostics.routes";
 app.use("/api/v1/diagnostics", diagnostics);
 

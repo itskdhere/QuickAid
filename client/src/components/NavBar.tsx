@@ -19,7 +19,6 @@ export interface IUser {
   pfp: string;
   name: string;
   email: string;
-  createdAt: Date;
 }
 
 export default function NavBar({ backBtn }: { backBtn?: boolean }) {
@@ -53,7 +52,7 @@ export default function NavBar({ backBtn }: { backBtn?: boolean }) {
       .get("/api/v1/auth/user/signout", { withCredentials: true })
       .then((res) => {
         if (res.status === 200) {
-          window.location.href = "/auth/user/signin";
+          navigate("/auth/user/signin");
         }
       })
       .catch((error) => {

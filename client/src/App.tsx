@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 import { Toaster } from "@/components/ui/sonner";
 import Landing from "./pages/Landing";
-import AuthIndex from "./pages/auth/Index";
+import AuthSwitch from "./pages/auth/Switch";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
 import AuthForgotPassword from "./pages/auth/user/ForgotPassword";
@@ -16,11 +16,12 @@ import UserCommunity from "./pages/user/Community";
 function App() {
   return (
     <>
-      <Toaster />
+      <Toaster className="dark" />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="auth">
-          <Route index element={<AuthIndex />} />
+          <Route index element={<Navigate to="switch" />} />
+          <Route path="switch" element={<AuthSwitch />} />
           <Route path="forgot-password" element={<AuthForgotPassword />} />
           <Route path="user">
             <Route index element={<Navigate to="signup" />} />

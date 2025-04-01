@@ -30,7 +30,7 @@ export default function Settings() {
         setIsFetchLoading(true);
         setFetchError(null);
 
-        const response = await axios.get("/api/v1/auth/user/whoami", {
+        const response = await axios.get("/api/v1/account/user/view", {
           withCredentials: true,
         });
 
@@ -150,7 +150,7 @@ export default function Settings() {
       };
 
       const response = await axios.put(
-        "/api/v1/auth/user/update-profile",
+        "/api/v1/account/user/update",
         updatedUserData,
         { withCredentials: true }
       );
