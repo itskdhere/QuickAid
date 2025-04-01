@@ -69,7 +69,7 @@ export default function AuthUserSignup() {
           to="/"
           className="flex items-center gap-2 self-center font-medium text-primary"
         >
-          <div className="flex h-6 w-6 items-center justify-center rounded-md text-primary-foreground">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md text-primary-foreground">
             <Logo />
           </div>
           QuickAid

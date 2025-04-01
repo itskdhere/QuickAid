@@ -7,7 +7,7 @@
   "theme_color": "#000000",
   "orientation": "any",
   "dir": "auto",
-  "start_url": "/",
+  "start_url": "/welcome",
   "scope": "/",
   "lang": "en",
   "categories": ["healthcare", "lifestyle", "utilities"],

@@ -1,6 +1,9 @@
+import { useEffect, useRef } from "react";
 import { Routes, Route, Navigate } from "react-router";
 import { Toaster } from "@/components/ui/sonner";
+
 import Landing from "./pages/Landing";
+import Welcome from "./pages/Welcome";
 import AuthSwitch from "./pages/auth/Switch";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
@@ -12,9 +15,19 @@ import UserDiagnostics from "./pages/user/Diagnostics";
 import UserNearby from "./pages/user/Nearby";
 import UserAmbulance from "./pages/user/Ambulance";
 import UserCommunity from "./pages/user/Community";
-import { useEffect } from "react";
+
+import BeforeInstallPromptEvent from "@/types/BeforeInstallPromptEvent";
 
 function App() {
+  const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt.current = e;
+    });
+  }, []);
+
   useEffect(() => {
     if (typeof navigator.serviceWorker !== "undefined") {
       navigator.serviceWorker.register("/sw.js");
@@ -25,7 +38,8 @@ function App() {
     <>
       <Toaster className="dark" />
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landing deferredPrompt={deferredPrompt} />} />
+        <Route path="welcome" element={<Welcome />} />
         <Route path="auth">
           <Route index element={<Navigate to="switch" />} />
           <Route path="switch" element={<AuthSwitch />} />
