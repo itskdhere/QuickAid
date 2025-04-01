@@ -12,8 +12,15 @@ import UserDiagnostics from "./pages/user/Diagnostics";
 import UserNearby from "./pages/user/Nearby";
 import UserAmbulance from "./pages/user/Ambulance";
 import UserCommunity from "./pages/user/Community";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    if (typeof navigator.serviceWorker !== "undefined") {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  }, []);
+
   return (
     <>
       <Toaster className="dark" />
