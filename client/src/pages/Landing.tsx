@@ -74,7 +74,7 @@ function Landing({
           <FeatureCard
             icon={<FaStethoscope className="text-4xl text-blue-500" />}
             title="Self Diagnostics"
-            description="Get AI-powered analysis of your symptoms and preliminary guidance."
+            description="Get AI-powered symptoms analysis and preliminary guidance."
           />
           <FeatureCard
             icon={<FaMapMarkerAlt className="text-4xl text-red-500" />}

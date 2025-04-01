@@ -19,6 +19,8 @@ requiredEnvVars.forEach((envVar) => {
   }
 });
 
+import chalk from "chalk";
+import { SignalConstants } from "os";
 import connectDB from "./db/connect";
 import app from "./app";
 
@@ -33,3 +35,11 @@ app.listen(PORT, () => {
   });
   console.log(`Express.js app listening at http://localhost:${PORT}`);
 });
+
+process.on("SIGINT", signalHandler);
+process.on("SIGTERM", signalHandler);
+process.on("SIGQUIT", signalHandler);
+
+function signalHandler(signal: SignalConstants) {
+  console.log(chalk.bgRedBright(`Received ${signal}`));
+}

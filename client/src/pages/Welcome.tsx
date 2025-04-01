@@ -22,8 +22,7 @@ const features = [
   {
     icon: <FaStethoscope className="text-blue-500 text-3xl" />,
     title: "Self Diagnostics",
-    description:
-      "Get AI-powered analysis of your symptoms and preliminary guidance.",
+    description: "Get AI-powered symptoms analysis and preliminary guidance.",
   },
   {
     icon: <FaMapMarkerAlt className="text-red-500 text-3xl" />,
