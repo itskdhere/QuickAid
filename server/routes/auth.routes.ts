@@ -5,6 +5,7 @@ import {
   userSignin,
   userSignout,
   userWhoami,
+  updateUserProfile,
 } from "../controllers/auth.controller";
 
 const router = Router();
@@ -12,6 +13,8 @@ const router = Router();
 router.route("/user/signup").post(userSignup);
 router.route("/user/signin").post(userSignin);
 router.route("/user/signout").get(checkAuth, userSignout);
+
 router.route("/user/whoami").get(checkAuth, userWhoami);
+router.route("/user/update-profile").put(checkAuth, updateUserProfile);
 
 export default router;
