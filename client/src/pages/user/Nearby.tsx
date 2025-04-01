@@ -26,29 +26,61 @@ export default function Nearby() {
   const [nearby, setNearby] = useState<INearbyItem[]>([]);
   const [location, setLocation] = useState("");
   const [selectedValue, setSelectedValue] = useState("hospital");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleFind() {
-    let res;
-    const coordinatePattern = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
-    if (coordinatePattern.test(location)) {
-      res = await axios.post("/api/v1/nearby/search", {
-        location,
-        filter: selectedValue,
-      });
-    } else {
-      const r = await axios.post("/api/v1/nearby/geocode", {
-        address: location,
-        filter: selectedValue,
-      });
-      res = await axios.post("/api/v1/nearby/search", {
-        location: `${r.data.lat},${r.data.lng}`,
-        filter: selectedValue,
-      });
+    try {
+      setIsLoading(true);
+      setError(null);
+      setNearby([]);
+
+      if (!location) {
+        setError("Please enter a location or use current location");
+        return;
+      }
+
+      let res;
+      const coordinatePattern = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
+
+      if (coordinatePattern.test(location)) {
+        res = await axios.post("/api/v1/nearby/search", {
+          location,
+          filter: selectedValue,
+        });
+      } else {
+        try {
+          const r = await axios.post("/api/v1/nearby/geocode", {
+            address: location,
+          });
+
+          if (!r.data || !r.data.lat || !r.data.lng) {
+            throw new Error("Invalid location data received");
+          }
+
+          res = await axios.post("/api/v1/nearby/search", {
+            location: `${r.data.lat},${r.data.lng}`,
+            filter: selectedValue,
+          });
+        } catch (geocodeError) {
+          setError("Could not find the specified location. Please try again.");
+          console.error("Geocoding error:", geocodeError);
+          return;
+        }
+      }
+
+      if (!res.data || res.data.length === 0) {
+        setError(`No ${selectedValue} found near this location`);
+        return;
+      }
+
+      setNearby(res.data);
+    } catch (error) {
+      console.error("Error finding nearby services:", error);
+      setError("An error occurred while searching. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log(res.data);
-
-    setNearby(res.data);
   }
 
   return (
@@ -70,16 +102,33 @@ export default function Nearby() {
             <Button
               variant="default"
               onClick={async () => {
-                const coordinates = await Geolocation.getCurrentPosition();
-                setLocation(
-                  `${coordinates.coords.latitude},${coordinates.coords.longitude}`
-                );
+                try {
+                  setIsLoading(true);
+                  const coordinates = await Geolocation.getCurrentPosition();
+                  setLocation(
+                    `${coordinates.coords.latitude},${coordinates.coords.longitude}`
+                  );
+                  setError(null);
+                } catch (error) {
+                  console.error("Error getting location:", error);
+                  setError(
+                    "Failed to get your current location. Please check your location permissions."
+                  );
+                } finally {
+                  setIsLoading(false);
+                }
               }}
             >
               <MdLocationPin className="h-5 w-5" />
               Use Current Location
             </Button>
-            <Button variant="default" onClick={() => setLocation("")}>
+            <Button
+              variant="default"
+              onClick={() => {
+                setLocation("");
+                setError(null);
+              }}
+            >
               <MdClear className="h-5 w-5" />
             </Button>
           </div>
@@ -103,13 +152,26 @@ export default function Nearby() {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={handleFind} className="w-full" variant="secondary">
-            Find Nearby
+          <Button
+            onClick={handleFind}
+            className="w-full"
+            variant="secondary"
+            disabled={isLoading}
+          >
+            {isLoading ? "Searching..." : "Find Nearby"}
           </Button>
         </div>
       </div>
 
-      {nearby.length > 1 && (
+      {isLoading && (
+        <p className="text-center text-amber-400">
+          Searching for nearby {selectedValue}...
+        </p>
+      )}
+
+      {error && <p className="text-center text-red-500">{error}</p>}
+
+      {nearby.length > 1 && !error && (
         <div className="p-4 space-y-10 border border-gray-700 rounded text-gray-300">
           <div className="space-y-4">
             <h2 className="mb-2 text-2xl text-center">Search Results</h2>

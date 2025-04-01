@@ -11,6 +11,7 @@ import {
   Activity,
   PersonStanding,
   Heart,
+  AlertTriangle,
 } from "lucide-react";
 
 type THealthTips = {
@@ -29,24 +30,55 @@ const emergencyContacts = [
 
 export default function Dashboard() {
   const [tips, setTips] = useState<THealthTips[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      await axios
-        .get("/api/v1/misc/tips", {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await axios.get("/api/v1/misc/tips", {
           withCredentials: true,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            console.log(res?.data.tips);
-            setTips(res?.data.tips);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          setTips([]);
         });
+
+        if (response.status === 200 && response.data && response.data.tips) {
+          setTips(response.data.tips);
+        } else {
+          throw new Error("Invalid response format");
+        }
+      } catch (error) {
+        console.error("Error fetching health tips:", error);
+
+        if (axios.isAxiosError(error)) {
+          // Handle specific HTTP errors
+          if (error.response) {
+            if (error.response.status === 401) {
+              setError("You need to be logged in to view health tips.");
+            } else if (error.response.status === 404) {
+              setError("No health tips found. Please try again later.");
+            } else {
+              setError(
+                `Server error: ${error.response.status}. Please try again later.`
+              );
+            }
+          } else if (error.request) {
+            // Request was made but no response received
+            setError("Network issue. Please check your internet connection.");
+          } else {
+            setError("An error occurred. Please try again later.");
+          }
+        } else {
+          setError("An unexpected error occurred. Please try again later.");
+        }
+
+        setTips([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
+
     fetchData();
   }, []);
 
@@ -104,7 +136,21 @@ export default function Dashboard() {
           Health Tips
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {tips?.length !== 0 ? (
+          {isLoading ? (
+            <p className="text-xl text-gray-300">Loading health tips...</p>
+          ) : error ? (
+            <Card className="bg-gradient-to-r from-red-500/10 to-red-700/10 border-red-900">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="w-6 h-6 text-red-400" />
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-200">Error</h3>
+                    <p className="text-gray-400">{error}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : tips.length > 0 ? (
             tips.map((tip, index) => (
               <Card
                 key={index}
@@ -112,9 +158,6 @@ export default function Dashboard() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
-                    {/* <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                      <Clock className="w-4 h-4 text-purple-400" />
-                    </div> */}
                     <div>
                       <h3 className="text-lg font-medium text-gray-200">
                         {tip.title}
@@ -126,7 +169,7 @@ export default function Dashboard() {
               </Card>
             ))
           ) : (
-            <p className="text-xl text-gray-300">Loading...</p>
+            <p className="text-xl text-gray-300">No health tips available.</p>
           )}
         </div>
       </section>
@@ -140,10 +183,6 @@ export default function Dashboard() {
           </h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden">
-          {/* <div
-            className="flex transition-transform duration-300 ease-in-out"
-            style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-          > */}
           {emergencyContacts.map((contact, index) => (
             <div key={index} className="w-full flex-shrink-0">
               <Card className="bg-gray-800/50 border-gray-700">
@@ -157,7 +196,7 @@ export default function Dashboard() {
                         {contact.number}
                       </p>
                     </div>
-                    <a href={`tel:+${contact.number}`}>
+                    <a href={`tel:${contact.number}`}>
                       <Phone className="text-red-400" />
                     </a>
                   </div>
@@ -167,7 +206,6 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
-      {/* </div> */}
     </div>
   );
 }

@@ -18,8 +18,6 @@ export const healthTips = async (
       .length(4),
   });
 
-  type THealthTips = z.infer<typeof HealthTipsSchema>;
-
   const model = google("gemini-2.0-flash-lite", {
     safetySettings: [
       {
@@ -53,7 +51,6 @@ export const healthTips = async (
     temperature: 0.7,
   })
     .then((result) => {
-      console.log(result.object);
       res.json(result.object);
     })
     .catch((error) => {

@@ -96,8 +96,6 @@ export const nearbySearch = async (
     googleMapsUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location}&type=${filter}&radius=10000&rankby=prominence&key=${apiKey}`;
   }
 
-  console.log(googleMapsUrl);
-
   await axios
     .get(googleMapsUrl)
     .then(async (result) => {

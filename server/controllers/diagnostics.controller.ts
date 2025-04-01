@@ -28,8 +28,6 @@ export const diagnosticsPredict = async (
     return;
   }
 
-  console.log(symptomsText);
-
   try {
     await axios
       .post(

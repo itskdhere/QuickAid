@@ -28,7 +28,6 @@ export default function Settings() {
         .then((res) => {
           if (res.status === 200) {
             const user = res?.data?.data?.user;
-            console.log(user);
             setProfileImage(user?.pfp);
             setName(user?.name);
             setEmail(user?.email);
@@ -44,10 +43,10 @@ export default function Settings() {
           }
         })
         .catch((error) => {
+          console.error(error);
           toast.error(
             `Error ${error.response.data.error.code}: ${error.response.data.error.message}`
           );
-
           navigate("/auth/user/signin");
         });
     }

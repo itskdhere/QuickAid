@@ -18,26 +18,53 @@ interface INearbyItem {
 export default function Ambulance() {
   const [nearby, setNearby] = useState<INearbyItem[]>([]);
   const [location, setLocation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleFind() {
-    let res;
-    const coordinatePattern = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
-    if (coordinatePattern.test(location)) {
-      res = await axios.post("/api/v1/nearby/search", {
-        location,
-        name: "ambulance",
-      });
-    } else {
-      const r = await axios.post("/api/v1/nearby/geocode", {
-        address: location,
-      });
-      res = await axios.post("/api/v1/nearby/search", {
-        location: `${r.data.lat},${r.data.lng}`,
-        name: "ambulance",
-      });
-    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      setNearby([]);
+      let res;
+      const coordinatePattern = /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/;
 
-    setNearby(res.data);
+      if (coordinatePattern.test(location)) {
+        res = await axios.post("/api/v1/nearby/search", {
+          location,
+          name: "ambulance",
+        });
+      } else {
+        try {
+          const r = await axios.post("/api/v1/nearby/geocode", {
+            address: location,
+          });
+
+          if (!r.data || !r.data.lat || !r.data.lng) {
+            throw new Error("Invalid location data received");
+          }
+
+          res = await axios.post("/api/v1/nearby/search", {
+            location: `${r.data.lat},${r.data.lng}`,
+            name: "ambulance",
+          });
+        } catch (geocodeError) {
+          setError("Could not find the specified location. Please try again.");
+          console.error("Geocoding error:", geocodeError);
+          return;
+        }
+      }
+
+      setNearby(res.data);
+      setError(null);
+    } catch (error) {
+      console.error("Error finding ambulances:", error);
+      setError(
+        "An error occurred while searching for ambulances. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -77,6 +104,13 @@ export default function Ambulance() {
           </Button>
         </div>
       </div>
+
+      {isLoading && (
+        <p className="text-center text-amber-400">
+          Searching for nearby ambulances...
+        </p>
+      )}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
       {nearby.length > 1 && (
         <div className="p-4 space-y-10 border border-gray-700 rounded text-gray-300">
