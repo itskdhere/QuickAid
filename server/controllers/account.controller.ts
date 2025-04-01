@@ -21,6 +21,7 @@ export async function viewUserAccount(
         dob: user.dob,
         gender: user.gender,
         createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
     },
   });
@@ -107,6 +108,45 @@ export async function updateUserAccount(
       error: {
         code: 500,
         message: "Failed to update profile",
+      },
+    });
+  }
+}
+
+export async function deleteUserAccount(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const user = req.user as IUser;
+
+    res.clearCookie("jwt");
+
+    const deletedUser = await User.findByIdAndDelete(user._id);
+
+    if (!deletedUser) {
+      res.status(404).json({
+        status: "error",
+        error: {
+          code: 404,
+          message: "User not found",
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Account deletion error:", error);
+
+    res.status(500).json({
+      status: "error",
+      error: {
+        code: 500,
+        message: "Failed to delete account",
       },
     });
   }
