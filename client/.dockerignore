@@ -1,0 +1,57 @@
+# Dependency directories
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build output
+dist
+build
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Development tools
+.eslintrc
+.eslintignore
+.prettierrc
+.prettierignore
+*.log
+.editorconfig
+.vscode
+.idea
+*.iml
+.DS_Store
+coverage
+.nyc_output
+
+# Docker-related
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Test files
+test
+__tests__
+*.test.*
+*.spec.*
+
+# Documentation
+docs
+*.md
+LICENSE
+README*
+
+# Temporary files
+tmp
+temp
+*.tmp

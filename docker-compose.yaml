@@ -1,0 +1,73 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: itskdhere/quickaid-client:latest
+    container_name: quickaid-client
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - VITE_API_URL=http://server:${PORT}
+    depends_on:
+      - server
+    networks:
+      - quickaid-network
+    volumes:
+      - ./etc/nginx.conf:/etc/nginx/nginx.conf.template
+      - ./etc/ssl:/etc/ssl
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: itskdhere/quickaid-server:latest
+    container_name: quickaid-server
+    restart: unless-stopped
+    # ports:
+    #   - ${PORT}:${PORT}
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGODB_URI=${MONGODB_URI}
+      - DB_NAME=${DB_NAME}
+      - AI_API_ENDPOINT=${AI_API_ENDPOINT}
+      - AI_API_TOKEN=${AI_API_TOKEN}
+      - GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_GENERATIVE_AI_API_KEY}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+    depends_on:
+      - db
+    networks:
+      - quickaid-network
+
+  db:
+    image: mongodb/mongodb-community-server:latest
+    container_name: quickaid-db
+    restart: unless-stopped
+    # ports:
+    #   - "27017:27017"
+    networks:
+      - quickaid-network
+    volumes:
+      - quickaid-data:/data/db
+
+networks:
+  quickaid-network:
+    name: quickaid-network
+    driver: bridge
+    external: false
+
+volumes:
+  quickaid-data:
+    name: quickaid-data
+    driver: local
