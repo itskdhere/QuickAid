@@ -1,39 +1,54 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-const requiredEnvVars = [
-  "PORT",
-  "CORS_ORIGIN",
-  "NODE_ENV",
-  "JWT_SECRET",
-  "MONGODB_URI",
-  "AI_API_ENDPOINT",
-  "AI_API_TOKEN",
-  "GOOGLE_GENERATIVE_AI_API_KEY",
-  "GOOGLE_MAPS_API_KEY",
-];
-
-requiredEnvVars.forEach((envVar) => {
-  if (!process.env[envVar]) {
-    throw new Error(`Environment variable ${envVar} is missing`);
-  }
-});
+import dotenv from "dotenv-safe";
+if (process.env?.NODE_ENV !== "production") {
+  dotenv.config({
+    path: "../.env",
+    example: "../.env.example",
+  });
+}
 
 import chalk from "chalk";
 import { SignalConstants } from "os";
 import connectDB from "./db/connect";
 import app from "./app";
 
-const PORT = process.env.PORT || 3500;
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 5000; // 5 seconds
 
-await connectDB();
+async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
+  try {
+    await connectDB();
+  } catch (error) {
+    if (retries > 0) {
+      console.log(
+        chalk.yellow(
+          `Failed to connect to database. Retrying in ${
+            RETRY_DELAY / 1000
+          } seconds... (${retries} attempts remaining)`
+        )
+      );
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+      return connectWithRetry(retries - 1);
+    } else {
+      console.log(
+        chalk.red(`Failed to connect to database after ${MAX_RETRIES} attempts`)
+      );
+      throw error;
+    }
+  }
+}
+
+await connectWithRetry();
+
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   app.on("error", (err) => {
     console.log("ERR: " + err);
     throw err;
   });
-  console.log(`Express.js app listening at http://localhost:${PORT}`);
+  console.log(
+    chalk.greenBright(`Express.js app listening at http://localhost:${PORT}`)
+  );
 });
 
 process.on("SIGINT", signalHandler);

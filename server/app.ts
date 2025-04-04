@@ -1,8 +1,9 @@
 import express, { Application } from "express";
-import cors from "cors";
 import cookieParser from "cookie-parser";
-import passport from "passport";
-import "./config/passport";
+import cors from "cors";
+
+import initializePassport from "./config/passport";
+const passport = await initializePassport();
 
 const app: Application = express();
 
