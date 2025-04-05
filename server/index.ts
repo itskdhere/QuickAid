@@ -39,7 +39,7 @@ async function connectWithRetry(retries = MAX_RETRIES): Promise<void> {
 
 await connectWithRetry();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3500;
 
 app.listen(PORT, () => {
   app.on("error", (err) => {
