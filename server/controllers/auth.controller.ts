@@ -157,6 +157,8 @@ export async function userSignin(req: Request, res: Response): Promise<void> {
       res.cookie("jwt", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
         maxAge: 1000 * 3600 * 12, // 12 hour
       });
 
@@ -204,7 +206,6 @@ export function userGoogleCallback(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      domain: process.env.CORS_ORIGIN,
       maxAge: 1000 * 3600 * 12, // 12 hours
     });
 
