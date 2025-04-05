@@ -26,6 +26,7 @@ function Landing({
       const { outcome } = await deferredPrompt.current.userChoice;
       if (outcome === "accepted") {
         deferredPrompt.current = null;
+        navigate("/welcome");
       }
     }
   };

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { MdDirections } from "react-icons/md";
 import { toast } from "sonner";
 import { AlertTriangle } from "lucide-react";
+import Gemini from "@/components/Gemini";
 
 interface IResultPredict {
   disease: string;
@@ -239,7 +240,9 @@ export default function Diagnostics() {
                 <div className="text-gray-400">
                   <p className="text-xl">
                     <span>What is "{resultPredict.disease}" ? </span>
-                    <span>(Powered by Gemini)</span>
+                    <span>(Powered by</span>
+                    <Gemini className="inline h-6 ml-2 mr-1 -translate-y-1.5" />
+                    <span>)</span>
                   </p>
                   {infoError ? (
                     <div className="p-2 border border-amber-700 bg-amber-900/20 rounded-md text-amber-400 text-sm mt-2">

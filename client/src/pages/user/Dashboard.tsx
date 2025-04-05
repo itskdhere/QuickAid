@@ -13,6 +13,7 @@ import {
   Heart,
   AlertTriangle,
 } from "lucide-react";
+import Gemini from "@/components/Gemini";
 
 type THealthTips = {
   title: string;
@@ -133,7 +134,10 @@ export default function Dashboard() {
       <section className="mb-14">
         <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
           <Heart className="w-5 h-5 text-pink-400" />
-          Health Tips
+          <span>
+            Health Tips (Powered by
+            <Gemini className="inline h-6 ml-2 mr-1 -translate-y-1.5" />)
+          </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {isLoading ? (
