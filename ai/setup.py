@@ -1,6 +1,6 @@
 import os
 import subprocess
-subprocess.run(["pip", "install", "-r", "requirements.txt"], check=True)
+# subprocess.run(["","pip", "install", "-r", "requirements.txt"], check=True)/
 import numpy as np
 import pandas as pd
 from pandas_gbq import to_gbq
