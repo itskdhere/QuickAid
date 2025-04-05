@@ -1,0 +1,10 @@
+google-cloud-aiplatform
+google-cloud-storage
+google-cloud-bigquery
+pandas
+numpy<=2.0
+pandas-gbq
+sentence-transformers
+Flask
+flask-cors
+python-dotenv
