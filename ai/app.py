@@ -21,7 +21,7 @@ port = os.getenv("port")
 client = bigquery.Client(project=project_id)
 
 # Load the Bearer Token from environment variables
-bearer_token = os.getenv("BEARER_TOKEN")
+bearer_token = os.getenv("bearer_token")
 
 def token_required(f):
     @wraps(f)

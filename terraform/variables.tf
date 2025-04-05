@@ -13,12 +13,12 @@ variable "project_id" {
 
 variable "region" {
   type    = string
-  default = "us-central1"
+  default = "asia-south1"
 }
 
 variable "zone" {
   type    = string
-  default = "us-central1-c"
+  default = "asia-south1-b"
 }
 
 variable "vm_name" {
@@ -28,7 +28,7 @@ variable "vm_name" {
 
 variable "vm_type" {
   type    = string
-  default = "e2-micro"
+  default = "e2-medium"
 }
 
 variable "disk_size" {
