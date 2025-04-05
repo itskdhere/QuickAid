@@ -177,6 +177,9 @@ export function userGoogleCallback(
   res: Response,
   next: NextFunction
 ): void {
+  console.log("Google callback endpoint hit");
+  console.log("Query params:", req.query);
+
   passport.authenticate("google", {
     session: false,
     failureRedirect: "/auth/user/signin",
@@ -185,18 +188,27 @@ export function userGoogleCallback(
       return next(err);
     }
 
+    console.log("Passport authentication successful");
+    console.log("User:", (req.user as IUser).email);
+
     const token = jwt.sign(
       { id: (req.user as IUser).id },
       process.env.JWT_SECRET as string,
       { expiresIn: "12h" }
     );
 
+    console.log("Generated JWT token");
+
     res.cookie("jwt", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      path: "/",
+      domain: process.env.CORS_ORIGIN,
       maxAge: 1000 * 3600 * 12, // 12 hours
     });
+
+    console.log("Set JWT cookie");
 
     const baseUrl = process.env.GOOGLE_CALLBACK_ORIGIN;
 
