@@ -198,10 +198,12 @@ export function userGoogleCallback(
       maxAge: 1000 * 3600 * 12, // 12 hours
     });
 
+    const baseUrl = process.env.GOOGLE_CALLBACK_ORIGIN;
+
     if (!(req.user as IUser).phone) {
-      return res.redirect("/onboard/user");
+      return res.redirect(`${baseUrl}/onboard/user`);
     }
 
-    res.redirect("/user/dashboard");
+    res.redirect(`${baseUrl}/user/dashboard`);
   });
 }
