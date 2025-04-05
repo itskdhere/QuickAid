@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
@@ -166,4 +166,41 @@ export async function userSignin(req: Request, res: Response): Promise<void> {
       });
     }
   )(req, res);
+}
+
+export async function userGoogle(req: Request, res: Response): Promise<void> {
+  passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
+}
+
+export function userGoogleCallback(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/auth/user/signin",
+  })(req, res, function (err) {
+    if (err) {
+      return next(err);
+    }
+
+    const token = jwt.sign(
+      { id: (req.user as IUser).id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "12h" }
+    );
+
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 3600 * 12, // 12 hours
+    });
+
+    if (!(req.user as IUser).phone) {
+      return res.redirect("/onboard/user");
+    }
+
+    res.redirect("/user/dashboard");
+  });
 }

@@ -45,9 +45,11 @@ export async function userOnboard(req: Request, res: Response): Promise<void> {
     user.address = address;
     user.dob = new Date(dob);
     user.gender = gender;
-    user.pfp = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
-      name
-    )}&backgroundType=gradientLinear`;
+    if (!user.pfp) {
+      user.pfp = `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(
+        name
+      )}&backgroundType=gradientLinear`;
+    }
 
     await user.save();
 

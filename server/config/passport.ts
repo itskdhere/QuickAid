@@ -9,9 +9,44 @@ if (process.env?.NODE_ENV !== "production") {
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { User, IUser } from "../db/models/user.model";
 
 export default async function initializePassport() {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        callbackURL: `${process.env.GOOGLE_CALLBACK_ORIGIN}/api/v1/auth/google/callback`,
+        scope: ["profile", "email"],
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          let user = await User.findOne({ email: profile.emails?.[0].value });
+
+          if (!user) {
+            user = await User.create({
+              pfp: profile.photos?.[0].value,
+              googleId: profile.id,
+              name: profile.displayName,
+              email: profile.emails?.[0].value,
+              password: Math.random().toString(36).slice(-12),
+            });
+          } else if (!user.googleId) {
+            user.googleId = profile.id;
+            if (!user.pfp) user.pfp = profile.photos?.[0].value || "";
+            await user.save();
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err);
+        }
+      }
+    )
+  );
+
   passport.use(
     new LocalStrategy(
       { usernameField: "email" },
