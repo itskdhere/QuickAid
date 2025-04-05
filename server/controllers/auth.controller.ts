@@ -194,6 +194,7 @@ export function userGoogleCallback(
     res.cookie("jwt", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: 1000 * 3600 * 12, // 12 hours
     });
 
