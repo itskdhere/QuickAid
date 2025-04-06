@@ -109,15 +109,15 @@ function Landing({
       <section className="container max-w-6xl mx-auto px-4 py-10 flex flex-col items-center">
         <h2 className="text-3xl font-bold text-center mb-8">Demo Video</h2>
         <p>Coming Soon...</p>
-        {/* <iframe
+        <iframe
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/your-video-id"
+          src="https://www.youtube.com/embed/kjlNoOILAh4"
           title="YouTube video player"
           frameBorder="0"
           allowFullScreen
           className="rounded-lg shadow-lg"
-        ></iframe> */}
+        ></iframe>
       </section>
 
       {/* Source Code */}
