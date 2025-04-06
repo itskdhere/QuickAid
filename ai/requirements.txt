@@ -10,7 +10,6 @@ flask-cors
 python-dotenv
 torch>=1.6.0  
 transformers
-numpy
 scikit-learn
 scipy
 tqdm
