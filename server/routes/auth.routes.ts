@@ -1,6 +1,4 @@
 import { Router } from "express";
-import passport from "passport";
-import jwt from "jsonwebtoken";
 import checkAuth from "../middlewares/auth.middleware";
 import {
   userGoogle,

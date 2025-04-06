@@ -114,7 +114,6 @@ export const nearbySearch = async (
           place.place_id
         }&query_name=${encodeURIComponent(place.name)}`,
       }));
-      console.log(results);
       res.json(results);
       return;
     })
