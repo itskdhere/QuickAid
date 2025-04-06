@@ -58,7 +58,10 @@ UserSchema.pre("findOneAndDelete", async function (next) {
   const user = await this.model.findOne(this.getFilter());
   if (user) {
     await Post.deleteMany({ user: user._id });
-    await Post.updateMany({ likes: user._id }, { $pull: { likes: user._id } });
+    await Post.updateMany(
+      { likedBy: user.id },
+      { $pull: { likedBy: user.id } }
+    );
   }
   next();
 });

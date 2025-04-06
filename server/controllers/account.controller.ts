@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { z } from "zod";
 import { IUser, User } from "../db/models/user.model";
+import Post from "../db/models/community.model.js";
 
 export async function viewUserAccount(
   req: Request,
@@ -120,8 +121,25 @@ export async function deleteUserAccount(
   try {
     const user = req.user as IUser;
 
+    // Clear auth cookie
     res.clearCookie("jwt");
 
+    // First, update any posts the user liked to remove their ID from likedBy
+    await Post.updateMany(
+      { likedBy: user.id },
+      { $pull: { likedBy: user.id } }
+    );
+
+    // For each post that had the user's like removed, decrement the likes count
+    await Post.updateMany(
+      { likedBy: { $nin: [user.id] } },
+      { $inc: { likes: -1 } }
+    );
+
+    // Delete all posts by the user
+    await Post.deleteMany({ user: user._id });
+
+    // Finally delete the user
     const deletedUser = await User.findByIdAndDelete(user._id);
 
     if (!deletedUser) {

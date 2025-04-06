@@ -4,6 +4,7 @@ google-cloud-bigquery
 pandas
 numpy<=2.0
 pandas-gbq
+transformers
 sentence-transformers
 Flask
 flask-cors

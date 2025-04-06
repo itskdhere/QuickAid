@@ -43,10 +43,20 @@ export const healthTips = async (
     ],
   });
 
+  const gender = req.user?.gender;
+  const dob = req.user?.dob;
+  const age = dob
+    ? Math.floor(
+        (Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25)
+      )
+    : null;
+
+  const prompt = `Generate 4 health tips for ${age} year old ${gender}. No markdown formatting.`;
+
   await generateObject({
     model: model,
     schema: HealthTipsSchema,
-    prompt: "Generate 4 health tips. No markdown formatting.",
+    prompt: prompt,
     maxTokens: 500,
     temperature: 0.7,
   })
