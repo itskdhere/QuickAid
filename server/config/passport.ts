@@ -38,7 +38,7 @@ export default async function initializePassport() {
             if (!user.pfp) user.pfp = profile.photos?.[0].value || "";
             await user.save();
           }
-          console.log("Authentication successful");
+
           return done(null, user);
         } catch (err) {
           return done(err);
