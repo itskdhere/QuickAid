@@ -38,13 +38,20 @@ export const diagnosticsPredict = async (
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.AI_API_TOKEN}`,
           },
         }
       )
       .then((result) => {
+        const { disease, definition, response_type } = result.data;
+
+        const diseaseArray = Object.values(disease);
+        const definitionArray = Object.values(definition);
+
         res.json({
-          disease: result.data.disease,
-          description: `https://www.google.com/search?q=${result.data.disease}`,
+          response_type: response_type,
+          disease: diseaseArray,
+          definition: definitionArray,
         });
       })
       .catch((error) => {

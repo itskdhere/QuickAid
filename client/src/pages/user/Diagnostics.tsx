@@ -11,8 +11,9 @@ import { AlertTriangle } from "lucide-react";
 import Gemini from "@/components/Gemini";
 
 interface IResultPredict {
-  disease: string;
-  description: string;
+  response_type: string;
+  disease: string[];
+  definition: string[];
 }
 
 interface IResultNearby {
@@ -28,16 +29,14 @@ export default function Diagnostics() {
   const [isLoading, setIsLoading] = useState(true);
   const [diagnosisInProgress, setDiagnosisInProgress] = useState(false);
   const [isPredict, setIsPredict] = useState(true);
-  const [isInfo, setIsInfo] = useState(true);
   const [isNearby, setIsNearby] = useState(true);
   const [resultPredict, setResultPredict] = useState<IResultPredict>({
-    disease: "",
-    description: "",
+    response_type: "text",
+    disease: [],
+    definition: [],
   });
-  const [resultInfo, setResultInfo] = useState("");
   const [resultNearby, setResultNearby] = useState<IResultNearby[]>([]);
   const [predictError, setPredictError] = useState<string | null>(null);
-  const [infoError, setInfoError] = useState<string | null>(null);
   const [nearbyError, setNearbyError] = useState<string | null>(null);
 
   const handlePredict = async () => {
@@ -45,18 +44,15 @@ export default function Diagnostics() {
       toast.error("Please describe your symptoms first");
       return;
     }
-
+    resetDiagnosis();
     try {
       setDiagnosisInProgress(true);
       setIsLoading(false);
       setPredictError(null);
-      setInfoError(null);
       setNearbyError(null);
-
       const response = await axios.post("/api/v1/diagnostics/predict", {
         symptomsText,
       });
-
       setIsPredict(false);
       setResultPredict(response.data);
     } catch (error) {
@@ -85,65 +81,22 @@ export default function Diagnostics() {
 
   useEffect(() => {
     if (isPredict) return;
-
-    async function fetchDiseaseInfo() {
-      try {
-        setInfoError(null);
-
-        const response = await axios.post("/api/v1/diagnostics/info", {
-          disease: resultPredict.disease,
-        });
-
-        setIsInfo(false);
-        setResultInfo(response.data);
-      } catch (error) {
-        console.error("Disease info error:", error);
-
-        if (axios.isAxiosError(error) && error.response) {
-          const statusCode = error.response.status;
-          const errorMessage =
-            error.response.data?.error?.message || "Unknown error occurred";
-
-          setInfoError(
-            `Failed to get disease information (${statusCode}): ${errorMessage}`
-          );
-          toast.error(`Error: ${errorMessage}`);
-        } else {
-          setInfoError(
-            "Failed to get disease information. Please check your connection."
-          );
-        }
-      }
-    }
-
-    fetchDiseaseInfo();
-  }, [isPredict, resultPredict.disease]);
-
-  useEffect(() => {
-    if (isPredict) return;
-
     async function fetchNearbyDoctors() {
       try {
         setNearbyError(null);
-
         const coordinates = await Geolocation.getCurrentPosition();
-
         const response = await axios.post("/api/v1/nearby/search", {
-          name: `doctors for ${resultPredict.disease}`,
+          name: `doctors for ${resultPredict.disease[0]}`,
           location: `${coordinates.coords.latitude},${coordinates.coords.longitude}`,
         });
-
         setIsNearby(false);
-
         if (!response.data || response.data.length === 0) {
           setNearbyError("No doctors found in your area for this condition.");
           return;
         }
-
         setResultNearby(response.data);
       } catch (error) {
         console.error("Nearby doctors error:", error);
-
         if ((error as GeolocationPositionError).code === 1) {
           setNearbyError(
             "Location access denied. Please enable location services to find nearby doctors."
@@ -152,7 +105,6 @@ export default function Diagnostics() {
           const statusCode = error.response.status;
           const errorMessage =
             error.response.data?.error?.message || "Unknown error occurred";
-
           setNearbyError(
             `Failed to find nearby doctors (${statusCode}): ${errorMessage}`
           );
@@ -164,50 +116,54 @@ export default function Diagnostics() {
         }
       }
     }
-
     fetchNearbyDoctors();
   }, [isPredict, resultPredict.disease]);
 
   const resetDiagnosis = () => {
     setIsLoading(true);
     setIsPredict(true);
-    setIsInfo(true);
     setIsNearby(true);
-    setSymptomsText("");
+    // setSymptomsText("");
     setPredictError(null);
-    setInfoError(null);
     setNearbyError(null);
-    setResultPredict({ disease: "", description: "" });
-    setResultInfo("");
+    setResultPredict({
+      response_type: "text",
+      disease: [],
+      definition: [],
+    });
     setResultNearby([]);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4">
       <NavBar backBtn />
-      {isLoading ? (
-        <div className="relative p-4 border border-gray-700 rounded text-gray-300">
-          <p className="text-2xl text-center mb-6">Diagnostics</p>
-          <Textarea
-            placeholder="Describe How You Are Feeling Right Now..."
-            className="bg-transparent border-gray-700 focus:border-gray-500 mb-5 h-32 rounded"
-            value={symptomsText}
-            onChange={(e) => setSymptomsText(e.target.value)}
-          />
+      <div className="relative p-4 border border-gray-700 rounded text-gray-300">
+        <p className="text-2xl text-center mb-6">Diagnostics</p>
+        <Textarea
+          placeholder="Describe How You Are Feeling Right Now..."
+          className="bg-transparent border-gray-700 focus:border-gray-500 mb-5 h-20 rounded"
+          value={symptomsText}
+          onChange={(e) => setSymptomsText(e.target.value)}
+        />
 
-          <Button
-            className="w-full"
-            variant="secondary"
-            onClick={handlePredict}
-            disabled={diagnosisInProgress || !symptomsText.trim()}
-          >
-            {diagnosisInProgress ? "Analyzing Symptoms..." : "Submit"}
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-10">
+        <Button
+          className="w-full"
+          variant="secondary"
+          onClick={handlePredict}
+          disabled={diagnosisInProgress || !symptomsText.trim()}
+        >
+          {diagnosisInProgress ? "Analyzing Symptoms..." : "Submit"}
+        </Button>
+      </div>
+      {!isLoading && (
+        <div className="space-y-10 mt-10">
           <div className="p-4 space-y-5 border border-gray-700 rounded text-gray-300">
-            <p className="text-2xl text-center">Diagnostics Results</p>
+            <p className="text-2xl text-center">
+              <span>Results </span>
+              <span>(Powered by</span>
+              <Gemini className="inline h-6 ml-2 mr-1 -translate-y-1.5" />
+              <span>)</span>
+            </p>
 
             {predictError && (
               <div className="p-4 border border-red-700 bg-red-900/20 rounded-md flex gap-2 items-start">
@@ -228,39 +184,29 @@ export default function Diagnostics() {
             {!predictError && (
               <div className="space-y-8">
                 <div className="text-gray-400">
-                  <p className="text-xl">Symptoms Described:</p>
-                  <p className="text-lg">"{symptomsText}"</p>
-                </div>
-                <div className="text-gray-400">
                   <p className="text-xl">You most likely have:</p>
-                  <p className="text-lg text-gray-200">
-                    {isPredict ? "Analyzing..." : resultPredict.disease}
-                  </p>
-                </div>
-                <div className="text-gray-400">
-                  <p className="text-xl">
-                    <span>What is "{resultPredict.disease}" ? </span>
-                    <span>(Powered by</span>
-                    <Gemini className="inline h-6 ml-2 mr-1 -translate-y-1.5" />
-                    <span>)</span>
-                  </p>
-                  {infoError ? (
-                    <div className="p-2 border border-amber-700 bg-amber-900/20 rounded-md text-amber-400 text-sm mt-2">
-                      {infoError}
-                    </div>
+                  {isPredict ? (
+                    <p className="text-lg text-gray-200">Analyzing...</p>
                   ) : (
-                    <p className="text-lg">
-                      {isInfo ? "Loading information..." : resultInfo}
-                    </p>
+                    resultPredict.disease.map((disease, index) => (
+                      <p key={index} className="text-lg text-gray-200">
+                        {index + 1}. {disease}
+                      </p>
+                    ))
                   )}
                 </div>
-                <Button
-                  variant="secondary"
-                  className="dark w-full bg-slate-500/20 hover:bg-slate-500/30"
-                  onClick={resetDiagnosis}
-                >
-                  Start New Diagnosis
-                </Button>
+                <div className="text-gray-400">
+                  <p className="text-xl">Details:</p>
+                  {isPredict ? (
+                    <p className="text-lg">Loading definitions...</p>
+                  ) : (
+                    resultPredict.definition.map((definition, index) => (
+                      <p key={index} className="text-lg text-gray-200">
+                        {index + 1}. {definition}
+                      </p>
+                    ))
+                  )}
+                </div>
               </div>
             )}
           </div>
