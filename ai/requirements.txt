@@ -8,7 +8,7 @@ sentence-transformers
 Flask
 flask-cors
 python-dotenv
-torch>=1.6.0  
+torch  
 transformers
 scikit-learn
 scipy
