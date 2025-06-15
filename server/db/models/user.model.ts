@@ -27,7 +27,10 @@ export interface IUser extends Document {
 
 const UserSchema: Schema<IUser> = new Schema(
   {
-    id: { type: String, default: crypto.randomUUID() },
+    id: {
+      type: String,
+      default: () => crypto.randomUUID(),
+    },
     pfp: {
       type: String,
       default:

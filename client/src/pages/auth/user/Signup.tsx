@@ -97,6 +97,7 @@ export default function AuthUserSignup() {
                 <div className="grid gap-6">
                   <div className="flex flex-col gap-4">
                     <Button
+                      type="button"
                       variant="secondary"
                       className="w-full"
                       disabled={loading}
@@ -136,10 +137,11 @@ export default function AuthUserSignup() {
                       />
                     </div>
                     <Button
+                      type="submit"
                       variant="default"
                       className="w-full"
-                      onClick={handleSignup}
                       disabled={loading}
+                      onClick={handleSignup}
                     >
                       Create Account
                     </Button>

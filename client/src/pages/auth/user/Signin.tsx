@@ -97,6 +97,7 @@ export default function AuthUserSignin() {
                 <div className="grid gap-6">
                   <div className="flex flex-col gap-4">
                     <Button
+                      type="button"
                       variant="secondary"
                       className="w-full"
                       disabled={loading}
@@ -143,9 +144,10 @@ export default function AuthUserSignin() {
                     </div>
                     <Button
                       type="submit"
+                      variant="default"
                       className="w-full"
-                      onClick={handleSignin}
                       disabled={loading}
+                      onClick={handleSignin}
                     >
                       Log In
                     </Button>
