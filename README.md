@@ -1,138 +1,138 @@
 # QuickAid
 
-AI-Powered Medical Assistance at Your Fingertips
+🤖 AI-Powered Medical Assistance at Your Fingertips 💊
 
-## Overview
+## 📋 Overview
 
 QuickAid is a comprehensive healthcare platform designed to provide immediate medical assistance and community support. The application combines AI-powered medical advice, emergency services access, community support, and health resources in one easy-to-use platform.
 
-## Features
+## ✨ Features
 
-- **Self Diagnostics**: Get AI-powered symptoms analysis and preliminary guidance.
-- **Find Nearby**: Locate the closest hospitals, clinics, and emergency services in your area.
-- **Emergency Assistance** - Get ambulance services with your exact location details.
-- **Community Support**: Connect with others and share health-related experiences.
-- **Health Tips**: Get personalized health tips and advice based on your profile.
-- **Emergency Contacts**: Quick access to emergency contacts and helplines.
+- 🩺 **Self Diagnostics**: Get AI-powered symptoms analysis and preliminary guidance.
+- 📍 **Find Nearby**: Locate the closest hospitals, clinics, and emergency services in your area.
+- 🚨 **Emergency Assistance** - Get ambulance services with your exact location details.
+- 👥 **Community Support**: Connect with others and share health-related experiences.
+- 💡 **Health Tips**: Get personalized health tips and advice based on your profile.
+- 📞 **Emergency Contacts**: Quick access to emergency contacts and helplines.
 
-## Project Structure
+## 📁 Project Structure
 
-- **client**: React.js frontend built with TypeScript, Tailwind CSS & ShadCN UI.
-- **server**: Node.js backend with TypeScript, Express.js, Passport.js, MongoDB and JWT.
-- **ai**: Python AI service for medical assistance using Google Generative AI.
-- **terraform**: Infrastructure as Code for deployment.
-- **etc** - Nginx configuration, SSL certificates, and other configurations.
-- **docker-compose.yml**: Docker Compose file for production deployment.
+- 🧠 **ai**: Python-based AI RAG service using Flask, Google Generative AI and Sentence-Transformers for medical assistance.
+- 💻 **client**: React frontend built with TypeScript, Vite, Tailwind CSS, and ShadCN/UI components.
+- 📃 **docs**: Documentation for the project.
+- ⚙️ **etc**: Nginx configuration, SSL certificates, and other configuration files.
+- 🗄️ **server**: Node.js backend with Express, TypeScript, MongoDB, authentication, and API routes.
+- 🏗️ **terraform**: Infrastructure as Code for deployment to Google Cloud Platform.
+- 🐳 **docker-compose.yml**: Docker Compose file for production deployment.
 
-## Technologies
+## 🛠️ Technologies
 
-### Frontend
+- 🎨 **Frontend:** TypeScript, Vite, React 18, React Router, Tailwind CSS, ShadCN/UI, Framer Motion, Lucide React, Axios.
 
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Axios for API requests
-- Framer Motion for animations
+- 🔧 **Backend:** TypeScript, Node.js, Express.js, Passport.js, JWT, Bcrypt, Axios, Mongoose ODM, AI SDK, Zod, DotEnv, ESbuild.
 
-### Backend
+- 🌐 **APIs:** Gemini API, Google Maps API.
 
-- Node.js with Express
-- MongoDB for database
-- JWT for authentication
-- Passport.js
+- 🗃️ **Database:** MongoDB.
 
-### AI Service
+- 🤖 **AI:** Python, Flask, Sentence-Transformers, Vertex AI, BigQuery.
 
-- Python
-- Flask for web service
-- Google Generative AI integration
-- BigQuery for data storage
+- 🚀 **DevOps**: Nginx, Docker, Docker Compose, Terraform, Google Cloud Platform, GitHub Actions, Docker Hub.
 
-### DevOps
+## 🎯 Local Setup
 
-- Docker and Docker Compose
-- Terraform for infrastructure
+### 📋 Prerequisites
 
-## Getting Started
+- 🟢 Node.js (v22 or higher)
+- 🐍 Python (v3.13 or higher)
+- 🗃️ MongoDB (local or cloud instance)
+- ☁️ Google Cloud Platform (with billing enabled)
+- 🐳 Docker and Docker Compose (optional)
 
-### Prerequisites
+### ⚙️ Installation & Setup
 
-- Node.js (v16 or higher)
-- Python 3.9+
-- Docker and Docker Compose
-- MongoDB
-
-### Installation
-
-1. Clone the repository:
+1. 📥 Clone the repository:
 
    ```bash
    git clone https://github.com/itskdhere/QuickAid.git
    cd QuickAid
    ```
 
-2. Set up environment variables:
+2. 🔧 Set up environment variables:
 
    ```bash
    cp .env.example .env
    ```
 
-   Edit the .env file with your configuration.
+   Edit the `.env` file with your configuration.
 
-3. Start the development environment with Docker:
+3. 🐳 Start the development environment with Docker:
    ```bash
-   docker-compose up
+   docker compose up -d
    ```
 
-### Running Individual Services
+**Or,** Run Individual Services:
 
-#### Frontend
+- 💻 Frontend
 
-```bash
-cd client
-npm install
-npm run dev
-```
+  ```bash
+  cd client
+  npm install
+  ```
 
-#### Backend
+  ```bash
+  npm run dev
+  ```
 
-```bash
-cd server
-npm install
-npm run dev
-```
+- 🗄️ Backend
 
-#### AI Service
+  ```bash
+  cd server
+  npm install
+  ```
 
-```bash
-cd ai
-pip install -r requirements.txt
-python app.py
-```
+  ```bash
+  npm run dev
+  ```
 
-## Deployment
+- 🧠 AI Service
 
-The application can be deployed using Docker and Terraform:
+  ```bash
+  cd ai
+  pip install -r requirements.txt
+  python setup.py
+  ```
+
+  ```bash
+  python app.py
+  ```
+
+## 🚀 Deployment
+
+The application can be deployed using Terraform to Google Cloud Platform.
 
 ```bash
 cd terraform
 terraform init
+terraform plan
+```
+
+```bash
 terraform apply
 ```
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. 🍴 Fork the repository [here](https://github.com/itskdhere/QuickAid/fork)
+2. 🌟 Create your feature branch: `git checkout -b feature/amazing-feature`
+3. 💾 Commit your changes: `git commit -m 'Add some amazing feature'`
+4. 📤 Push to the branch: `git push origin feature/amazing-feature`
+5. 📬 Open a Pull Request
 
 ---
 
 <p align="center">
-Built with by 💜 Turing Devs
+Built with 💜 by Turing Devs
 </p>
