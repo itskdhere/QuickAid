@@ -49,7 +49,8 @@ resource "google_compute_instance" "quickaid-vm" {
   }
 
   metadata = {
-    ssh-keys = "${var.ssh_username}:${file(var.ssh_public_key_path)}"
+    block-project-ssh-keys = "true"
+    ssh-keys               = "${var.ssh_username}:${file(var.ssh_public_key_path)}"
   }
 
   labels = {

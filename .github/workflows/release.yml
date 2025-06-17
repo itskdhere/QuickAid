@@ -82,6 +82,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
           labels: |
             org.opencontainers.image.title=QuickAid ${{ matrix.service }}
             org.opencontainers.image.description=AI Powered Medical Assistance at Your Fingertips - ${{ matrix.service }} service

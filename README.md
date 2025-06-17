@@ -1,5 +1,8 @@
 # QuickAid
 
+[![Docker Build Check](https://github.com/itskdhere/QuickAid/actions/workflows/docker_build_check.yml/badge.svg?branch=main)](https://github.com/itskdhere/QuickAid/actions/workflows/docker_build_check.yml)
+[![Release Docker Images](https://github.com/itskdhere/QuickAid/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/itskdhere/QuickAid/actions/workflows/release.yml)
+
 🤖 AI-Powered Medical Assistance at Your Fingertips 💊
 
 ## 📋 Overview
