@@ -13,6 +13,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/release.yml"
+      - ".github/workflows/docker_build_check.yml"
+      - "ai/**"
+      - "client/**"
+      - "server/**"
+      - "docker-compose.yml"
+      - "**/Dockerfile"
   workflow_dispatch:
 
 jobs:
