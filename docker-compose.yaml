@@ -7,7 +7,7 @@ services:
     container_name: quickaid-ai
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "${port}:${port}"
     env_file:
       - .env
     environment:
@@ -27,7 +27,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: itskdhere/quickaid-client:latest
+    image: itskdhere/quickaid-client:1.0.0-test
     container_name: quickaid-client
     restart: unless-stopped
     ports:
@@ -51,7 +51,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: itskdhere/quickaid-server:latest
+    image: itskdhere/quickaid-server:1.0.0-test
     container_name: quickaid-server
     restart: unless-stopped
     ports:

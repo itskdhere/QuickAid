@@ -10,6 +10,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE ${port}
 
 CMD ["python", "app.py"]
