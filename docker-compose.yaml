@@ -27,7 +27,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: itskdhere/quickaid-client:1.0.0-test
+    image: itskdhere/quickaid-client:latest
     container_name: quickaid-client
     restart: unless-stopped
     ports:
@@ -51,7 +51,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: itskdhere/quickaid-server:1.0.0-test
+    image: itskdhere/quickaid-server:latest
     container_name: quickaid-server
     restart: unless-stopped
     ports:
