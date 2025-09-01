@@ -24,3 +24,16 @@ resource "google_compute_firewall" "allow-https" {
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["https-server"]
 }
+
+resource "google_compute_firewall" "allow-beszel" {
+  name    = "allow-beszel"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["45876"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["beszel"]
+}

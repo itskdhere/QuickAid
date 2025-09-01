@@ -28,7 +28,7 @@ resource "google_compute_instance" "quickaid-vm" {
   deletion_protection = false
   enable_display      = false
 
-  tags = ["http-server", "https-server"]
+  tags = ["http-server", "https-server", "beszel"]
 
   shielded_instance_config {
     enable_integrity_monitoring = true
