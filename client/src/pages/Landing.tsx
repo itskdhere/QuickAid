@@ -48,7 +48,7 @@ function Landing({
       </header>
 
       {/* Hero Section */}
-      <section className="container max-w-6xl mx-auto px-4 py-28 flex flex-col md:flex-row items-center">
+      <section className="container max-w-6xl mx-auto px-4 py-40 flex flex-col md:flex-row items-center">
         <div className="mb-10 md:mb-0">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             AI Powered Medical Assistance at Your Fingertips
@@ -108,7 +108,7 @@ function Landing({
       {/* Demo Video  */}
       <section className="container max-w-6xl mx-auto px-4 py-10 flex flex-col items-center">
         <h2 className="text-3xl font-bold text-center mb-8">Demo Video</h2>
-        <p>Coming Soon...</p>
+        {/* <p>Coming Soon...</p> */}
         <iframe
           width="560"
           height="315"
@@ -140,7 +140,7 @@ function Landing({
       <footer className="bg-gray-100 dark:bg-slate-900 py-3 mt-5">
         <div className="container mx-auto px-3 text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            Built with by 💜 Turing Devs
+            Built with 💜 by Turing Devs
           </p>
         </div>
       </footer>
