@@ -1,8 +1,8 @@
-import dotenv from "dotenv-safe";
+import dotenv from "dotenv";
 if (process.env?.NODE_ENV !== "production") {
   dotenv.config({
     path: "../.env",
-    example: "../.env.example",
+    quiet: true,
   });
 }
 
