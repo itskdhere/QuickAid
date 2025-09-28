@@ -5,7 +5,7 @@ export default async function connectDB() {
   console.log(chalk.yellow("Attempting to connect to MongoDB..."));
   try {
     const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${process.env.DB_NAME}`
+      `${process.env.MONGODB_URI}/${process.env.DB_NAME}?retryWrites=true&w=majority`
     );
     console.log(
       chalk.green(
@@ -13,7 +13,7 @@ export default async function connectDB() {
       )
     );
     return connectionInstance;
-  } catch (error) {
+  } catch (error: any) {
     console.log(chalk.red("MongoDB Connection Error: ") + error);
     throw new Error(error);
   }
