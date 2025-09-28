@@ -3,9 +3,7 @@ name: Docker Build Check
 on:
   pull_request:
     paths:
-      - ".github/workflows/release.yml"
-      - ".github/workflows/docker_build_check.yml"
-      - "ai/**"
+      - ".github/workflows/**"
       - "client/**"
       - "server/**"
       - "docker-compose.yml"
@@ -14,9 +12,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/release.yml"
-      - ".github/workflows/docker_build_check.yml"
-      - "ai/**"
+      - ".github/workflows/**"
       - "client/**"
       - "server/**"
       - "docker-compose.yml"
@@ -30,7 +26,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [client, server, ai]
+        service: [client, server]
       fail-fast: false
 
     steps:
