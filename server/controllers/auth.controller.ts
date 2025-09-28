@@ -3,6 +3,12 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { IUser, User } from "../db/models/user.model";
+import { sendPasswordResetEmail } from "../services/email.service";
+import {
+  generateVerificationToken,
+  generatePasswordResetExpiry,
+  isTokenExpired,
+} from "../utils/auth.utils";
 
 export async function userWhoami(req: Request, res: Response): Promise<void> {
   const user = req.user as IUser;
@@ -135,7 +141,7 @@ export async function userSignin(req: Request, res: Response): Promise<void> {
   passport.authenticate(
     "local",
     { session: false },
-    (err, user: IUser, info) => {
+    (err: any, user: IUser, info: any) => {
       if (err || !user) {
         return res.status(400).json({
           status: "error",
@@ -182,7 +188,7 @@ export function userGoogleCallback(
   passport.authenticate("google", {
     session: false,
     failureRedirect: "/auth/user/signin",
-  })(req, res, function (err) {
+  })(req, res, function (err: any) {
     if (err) {
       return next(err);
     }
@@ -209,4 +215,131 @@ export function userGoogleCallback(
 
     res.redirect(`${baseUrl}/user/dashboard`);
   });
+}
+
+export async function forgotPassword(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { email } = req.body;
+
+  if (!email) {
+    res.status(400).json({
+      status: "error",
+      error: {
+        code: 400,
+        message: "Email is required",
+      },
+    });
+    return;
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.json({
+        status: "success",
+        message:
+          "If an account with the provided email exists, a password reset link has been sent.",
+      });
+      return;
+    }
+
+    const resetToken = generateVerificationToken();
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = generatePasswordResetExpiry();
+    await user.save();
+
+    try {
+      await sendPasswordResetEmail(email, resetToken);
+    } catch (emailError: any) {
+      console.error("Failed to send password reset email:", emailError);
+      throw new Error(emailError?.message);
+    }
+
+    res.json({
+      status: "success",
+      message:
+        "If an account with the provided email exists, a password reset link has been sent.",
+    });
+  } catch (error) {
+    console.error("Error in forgotPassword:", error);
+    res.status(500).json({
+      status: "error",
+      error: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
+}
+
+export async function resetPassword(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+    res.status(400).json({
+      status: "error",
+      error: {
+        code: 400,
+        message: "Token and password are required",
+      },
+    });
+    return;
+  }
+
+  try {
+    const user = await User.findOne({
+      passwordResetToken: token,
+    });
+
+    if (!user) {
+      res.status(400).json({
+        status: "error",
+        error: {
+          code: 400,
+          message: "Invalid or expired reset token",
+        },
+      });
+      return;
+    }
+
+    if (
+      !user.passwordResetExpires ||
+      isTokenExpired(user.passwordResetExpires)
+    ) {
+      res.status(400).json({
+        status: "error",
+        error: {
+          code: 400,
+          message: "Reset token has expired",
+        },
+      });
+      return;
+    }
+
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.json({
+      status: "success",
+      message:
+        "Password reset successful. You can now sign in with your new password.",
+    });
+  } catch (error) {
+    console.error("Error in resetPassword:", error);
+    res.status(500).json({
+      status: "error",
+      error: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
 }

@@ -22,6 +22,8 @@ export interface IUser extends Document {
   address: string;
   dob: Date;
   gender: string;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -53,6 +55,13 @@ const UserSchema: Schema<IUser> = new Schema(
     address: { type: String, trim: true },
     dob: { type: Date },
     gender: { type: String },
+    passwordResetToken: {
+      type: String,
+      sparse: true,
+    },
+    passwordResetExpires: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
