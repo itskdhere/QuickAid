@@ -7,7 +7,8 @@ import Welcome from "./pages/Welcome";
 import AuthSwitch from "./pages/auth/Switch";
 import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
-import AuthForgotPassword from "./pages/auth/user/ForgotPassword";
+import AuthForgotPassword from "./pages/auth/ForgotPassword";
+import AuthResetPassword from "./pages/auth/ResetPassword";
 import OnboardUser from "./pages/onboard/User";
 import UserSettings from "./pages/user/Settings";
 import UserDashboard from "./pages/user/Dashboard";
@@ -44,6 +45,7 @@ function App() {
           <Route index element={<Navigate to="switch" />} />
           <Route path="switch" element={<AuthSwitch />} />
           <Route path="forgot-password" element={<AuthForgotPassword />} />
+          <Route path="reset-password" element={<AuthResetPassword />} />
           <Route path="user">
             <Route index element={<Navigate to="signup" />} />
             <Route path="signup" element={<AuthUserSignup />} />
