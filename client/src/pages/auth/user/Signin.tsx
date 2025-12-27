@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,18 @@ export default function AuthUserSignin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  // Handle messages from signup or other redirects
+  useEffect(() => {
+    if (location.state?.message) {
+      toast.info(location.state.message);
+    }
+    if (location.state?.email) {
+      setEmail(location.state.email);
+    }
+  }, [location.state]);
 
   const handleGoogleSignin = (
     e:
@@ -44,10 +56,25 @@ export default function AuthUserSignin() {
         navigate("/user/dashboard");
       })
       .catch((err) => {
-        toast.error(
-          `Error ${err.response.data.error.code}: ${err.response.data.error.message}`
-        );
         setLoading(false);
+        const errorCode = err.response?.data?.error?.code;
+        const errorMessage = err.response?.data?.error?.message;
+
+        if (
+          errorCode === 403 &&
+          err.response?.data?.error?.action === "verify_email"
+        ) {
+          toast.error(errorMessage);
+          setTimeout(() => {
+            if (
+              window.confirm("Would you like to resend the verification email?")
+            ) {
+              navigate("/auth/resend-verification", { state: { email } });
+            }
+          }, 1000);
+        } else {
+          toast.error(`Error ${errorCode}: ${errorMessage}`);
+        }
       });
   }
 

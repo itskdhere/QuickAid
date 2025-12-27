@@ -39,9 +39,16 @@ export default function AuthUserSignup() {
     setLoading(true);
     axios
       .post("/api/v1/auth/user/signup", { email, password })
-      .then(() => {
+      .then((response) => {
         setLoading(false);
-        navigate("/onboard/user");
+        toast.success(response.data.message);
+        navigate("/auth/user/signin", {
+          state: {
+            message:
+              "Account created! Please check your email to verify your account before signing in.",
+            email: email,
+          },
+        });
       })
       .catch((err) => {
         setLoading(false);
