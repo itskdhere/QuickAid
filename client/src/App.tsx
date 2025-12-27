@@ -9,6 +9,8 @@ import AuthUserSignup from "./pages/auth/user/Signup";
 import AuthUserSignin from "./pages/auth/user/Signin";
 import AuthForgotPassword from "./pages/auth/ForgotPassword";
 import AuthResetPassword from "./pages/auth/ResetPassword";
+import VerifyEmail from "./pages/auth/VerifyEmail";
+import ResendVerification from "./pages/auth/ResendVerification";
 import OnboardUser from "./pages/onboard/User";
 import UserSettings from "./pages/user/Settings";
 import UserDashboard from "./pages/user/Dashboard";
@@ -46,6 +48,8 @@ function App() {
           <Route path="switch" element={<AuthSwitch />} />
           <Route path="forgot-password" element={<AuthForgotPassword />} />
           <Route path="reset-password" element={<AuthResetPassword />} />
+          <Route path="verify-email" element={<VerifyEmail />} />
+          <Route path="resend-verification" element={<ResendVerification />} />
           <Route path="user">
             <Route index element={<Navigate to="signup" />} />
             <Route path="signup" element={<AuthUserSignup />} />
