@@ -22,6 +22,9 @@ export interface IUser extends Document {
   address: string;
   dob: Date;
   gender: string;
+  isEmailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -56,6 +59,17 @@ const UserSchema: Schema<IUser> = new Schema(
     address: { type: String, trim: true },
     dob: { type: Date },
     gender: { type: String },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      sparse: true,
+    },
+    emailVerificationExpires: {
+      type: Date,
+    },
     passwordResetToken: {
       type: String,
       sparse: true,

@@ -32,9 +32,11 @@ export default async function initializePassport() {
               name: profile.displayName,
               email: profile.emails?.[0].value,
               password: Math.random().toString(36).slice(-12),
+              isEmailVerified: true,
             });
           } else if (!user.googleId) {
             user.googleId = profile.id;
+            user.isEmailVerified = true;
             if (!user.pfp) user.pfp = profile.photos?.[0].value || "";
             await user.save();
           }
