@@ -7,6 +7,8 @@ import {
   userSignin,
   userSignout,
   userWhoami,
+  verifyEmail,
+  resendVerificationEmail,
   forgotPassword,
   resetPassword,
 } from "../controllers/auth.controller";
@@ -21,6 +23,9 @@ router.route("/user/signin").post(userSignin);
 router.route("/user/signout").get(checkAuth, userSignout);
 
 router.route("/user/whoami").get(checkAuth, userWhoami);
+
+router.route("/verify-email").post(verifyEmail);
+router.route("/resend-verification").post(resendVerificationEmail);
 
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").post(resetPassword);

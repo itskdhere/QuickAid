@@ -3,9 +3,13 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { IUser, User } from "../db/models/user.model";
-import { sendPasswordResetEmail } from "../services/email.service";
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+} from "../services/email.service";
 import {
   generateVerificationToken,
+  generateEmailVerificationExpiry,
   generatePasswordResetExpiry,
   isTokenExpired,
 } from "../utils/auth.utils";
@@ -91,8 +95,29 @@ export async function userSignup(req: Request, res: Response): Promise<void> {
 
   try {
     const user = new User({ email, password });
+
+    const verificationToken = generateVerificationToken();
+    user.emailVerificationToken = verificationToken;
+    user.emailVerificationExpires = generateEmailVerificationExpiry();
+
     await user.save();
-    await userSignin(req, res);
+    // await userSignin(req, res);
+
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+    }
+
+    res.status(201).json({
+      status: "success",
+      message:
+        "Account created successfully. Please check your email to verify your account.",
+      data: {
+        emailSent: true,
+        email: user.email,
+      },
+    });
   } catch (err) {
     res.status(500).json({
       status: "error",
@@ -148,6 +173,17 @@ export async function userSignin(req: Request, res: Response): Promise<void> {
           error: {
             code: 400,
             message: "Invalid credentials",
+          },
+        });
+      }
+
+      if (!user.googleId && !user.isEmailVerified) {
+        return res.status(403).json({
+          status: "error",
+          error: {
+            code: 403,
+            message: "Please verify your email before signing in",
+            action: "verify_email",
           },
         });
       }
@@ -215,6 +251,149 @@ export function userGoogleCallback(
 
     res.redirect(`${baseUrl}/user/dashboard`);
   });
+}
+
+export async function verifyEmail(req: Request, res: Response): Promise<void> {
+  const { token } = req.body;
+
+  if (!token) {
+    res.status(400).json({
+      status: "error",
+      error: {
+        code: 400,
+        message: "Verification token is required",
+      },
+    });
+    return;
+  }
+
+  try {
+    const user = await User.findOne({
+      emailVerificationToken: token,
+    });
+
+    if (!user) {
+      res.status(400).json({
+        status: "error",
+        error: {
+          code: 400,
+          message: "Invalid or expired verification token",
+        },
+      });
+      return;
+    }
+
+    if (
+      !user.emailVerificationExpires ||
+      isTokenExpired(user.emailVerificationExpires)
+    ) {
+      res.status(400).json({
+        status: "error",
+        error: {
+          code: 400,
+          message: "Verification token has expired",
+        },
+      });
+      return;
+    }
+
+    // Update user verification status
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    res.json({
+      status: "success",
+      message: "Email verified successfully. You can now sign in.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
+}
+
+export async function resendVerificationEmail(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { email } = req.body;
+
+  if (!email) {
+    res.status(400).json({
+      status: "error",
+      error: {
+        code: 400,
+        message: "Email is required",
+      },
+    });
+    return;
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404).json({
+        status: "error",
+        error: {
+          code: 404,
+          message: "User not found",
+        },
+      });
+      return;
+    }
+
+    if (user.isEmailVerified) {
+      res.status(400).json({
+        status: "error",
+        error: {
+          code: 400,
+          message: "Email is already verified",
+        },
+      });
+      return;
+    }
+
+    // Generate new verification token
+    const verificationToken = generateVerificationToken();
+    user.emailVerificationToken = verificationToken;
+    user.emailVerificationExpires = generateEmailVerificationExpiry();
+    await user.save();
+
+    // Send verification email
+    try {
+      await sendVerificationEmail(email, verificationToken);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      res.status(500).json({
+        status: "error",
+        error: {
+          code: 500,
+          message: "Failed to send verification email",
+        },
+      });
+      return;
+    }
+
+    res.json({
+      status: "success",
+      message: "Verification email sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+    });
+  }
 }
 
 export async function forgotPassword(
