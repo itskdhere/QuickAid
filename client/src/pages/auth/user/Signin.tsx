@@ -51,9 +51,22 @@ export default function AuthUserSignin() {
     setLoading(true);
     axios
       .post("/api/v1/auth/user/signin", { email, password })
-      .then(() => {
-        setLoading(false);
-        navigate("/user/dashboard");
+      .then(async () => {
+        try {
+          const whoamiRes = await axios.get("/api/v1/auth/user/whoami", {
+            withCredentials: true,
+          });
+          const user = whoamiRes.data?.data?.user;
+          setLoading(false);
+          if (user?.isOnboarded) {
+            navigate("/user/dashboard");
+          } else {
+            navigate("/onboard/user");
+          }
+        } catch {
+          setLoading(false);
+          navigate("/user/dashboard");
+        }
       })
       .catch((err) => {
         setLoading(false);
@@ -86,7 +99,12 @@ export default function AuthUserSignin() {
         })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/user/dashboard");
+            const user = res.data?.data?.user;
+            if (user?.isOnboarded) {
+              navigate("/user/dashboard");
+            } else {
+              navigate("/onboard/user");
+            }
           }
         })
         .catch((error) => {

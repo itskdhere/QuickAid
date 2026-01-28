@@ -82,7 +82,12 @@ export default function Welcome() {
         })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/user/dashboard");
+            const user = res.data?.data?.user;
+            if (user?.isOnboarded) {
+              navigate("/user/dashboard");
+            } else {
+              navigate("/onboard/user");
+            }
           }
         })
         .catch((error) => {

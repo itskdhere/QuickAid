@@ -25,6 +25,8 @@ export async function userWhoami(req: Request, res: Response): Promise<void> {
         pfp: user.pfp,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        isOnboarded: !!user.phone,
       },
     },
   });

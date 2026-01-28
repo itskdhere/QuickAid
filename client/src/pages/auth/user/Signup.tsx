@@ -39,15 +39,10 @@ export default function AuthUserSignup() {
     setLoading(true);
     axios
       .post("/api/v1/auth/user/signup", { email, password })
-      .then((response) => {
+      .then(() => {
         setLoading(false);
-        toast.success(response.data.message);
-        navigate("/auth/user/signin", {
-          state: {
-            message:
-              "Account created! Please check your email to verify your account before signing in.",
-            email: email,
-          },
+        navigate("/auth/verify-email-sent", {
+          state: { email },
         });
       })
       .catch((err) => {
@@ -66,7 +61,12 @@ export default function AuthUserSignup() {
         })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/user/dashboard");
+            const user = res.data?.data?.user;
+            if (user?.isOnboarded) {
+              navigate("/user/dashboard");
+            } else {
+              navigate("/onboard/user");
+            }
           }
         })
         .catch((error) => {

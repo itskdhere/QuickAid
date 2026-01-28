@@ -19,6 +19,8 @@ export interface IUser {
   pfp: string;
   name: string;
   email: string;
+  phone?: string;
+  isOnboarded?: boolean;
 }
 
 export default function NavBar({ backBtn }: { backBtn?: boolean }) {
@@ -33,7 +35,11 @@ export default function NavBar({ backBtn }: { backBtn?: boolean }) {
         })
         .then((res) => {
           if (res.status === 200) {
-            setUser(res?.data?.data?.user);
+            const userData = res?.data?.data?.user;
+            setUser(userData);
+            if (!userData?.isOnboarded) {
+              navigate("/onboard/user");
+            }
           }
         })
         .catch((error) => {
