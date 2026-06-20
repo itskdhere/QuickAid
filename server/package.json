@@ -10,8 +10,8 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.3",
-    "ai": "^5.0.43",
+    "@ai-sdk/google": "^3.0.80",
+    "ai": "^6.0.196",
     "axios": "^1.16.0",
     "bcryptjs": "^3.0.2",
     "chalk": "^5.4.1",
